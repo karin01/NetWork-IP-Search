@@ -22,9 +22,11 @@ python app.py
 
 Flask 대시보드는 서버가 필요해 Pages에 호스팅할 수 없고, **`docs/` VitePress 문서**만 배포합니다.
 
-1. GitHub 저장소 **Settings → Pages → Build and deployment** 에서 **Source: GitHub Actions** 선택  
-2. `main`에 푸시하면 워크플로 **Deploy docs to GitHub Pages** 가 빌드·배포  
-3. 주소: **https://karin01.github.io/NetWork-IP-Search/**
+1. GitHub 저장소 **Settings → Pages → Build and deployment**  
+2. **Source** 를 **Deploy from a branch** 로 두고, **Branch** 는 **`gh-pages`** / **`/(root)`** 선택 후 Save  
+   - `main`에 푸시되면 Actions가 **`gh-pages` 브랜치**를 자동 생성·갱신합니다.  
+3. 1~2분 뒤 주소: **https://karin01.github.io/NetWork-IP-Search/**  
+   - 처음엔 **Actions** 탭에서 **Deploy docs to GitHub Pages** 워크플로가 성공(초록)인지 확인하세요.
 
 ## 3) 주요 기능
 

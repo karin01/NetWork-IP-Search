@@ -1,4 +1,6 @@
-# GitHub Pages: VitePress 기술 매뉴얼 배포 (Flask 대시보드는 정적 호스팅 불가 — 로컬/클라우드 VM에서 실행)
+# GitHub Pages: VitePress 빌드 후 gh-pages 브랜치에 푸시
+# 저장소 Settings → Pages → Source: Deploy from a branch → gh-pages / (root)
+# (upload-pages-artifact 방식은 Pages 소스를 "GitHub Actions"로 바꿔야 해서 404가 자주 남)
 name: Deploy docs to GitHub Pages
 
 on:
@@ -7,16 +9,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: pages-gh
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,28 +27,17 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        working-directory: docs
-        run: npm install
-
-      - name: Build VitePress
+      - name: Install and build VitePress
         working-directory: docs
         env:
           GITHUB_ACTIONS: "true"
-        run: npm run docs:build
+        run: |
+          npm install
+          npm run docs:build
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Push to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: docs/.vitepress/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.vitepress/dist
+          force_orphan: true
