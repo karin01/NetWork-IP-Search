@@ -33,6 +33,21 @@ Flask 대시보드는 서버가 필요해 Pages에 호스팅할 수 없습니다
 3. 1~2분 뒤 위 주소로 접속  
    - **Actions** 탭에서 **Deploy docs to GitHub Pages** 워크플로가 성공(초록)인지 확인하세요.
 
+### ⚠️ 다른 PC에서 안 열리거나, README만 보일 때 (가장 흔한 원인)
+
+1. **Pages 소스가 `main`으로 되어 있는 경우**  
+   저장소 **Settings → Pages**에서 **Branch가 `gh-pages`**, 폴더 **`/(root)`** 인지 꼭 확인하세요.  
+   `main` / `(root)`로 두면 GitHub가 **Jekyll로 README만 웹에 올립니다.** 이때 소스 보기에 `generator" content="Jekyll"` 이 보이면 **아직 커스텀 랜딩이 아닙니다.**
+
+2. **`127.0.0.1` 또는 `localhost`로 다른 PC에서 접속한 경우**  
+   `127.0.0.1`은 **그 PC 자기 자신**만 가리킵니다. 다른 컴퓨터에서는 **`https://karin01.github.io/NetWork-IP-Search/`** 처럼 **공개 주소**를 써야 하고, **대시보드(Flask)** 는 서버를 켠 PC의 **`http://그PC의내부IP:5000`** 으로 접속해야 합니다.
+
+3. **회사·학교망에서 `*.github.io` 차단**  
+   방화벽 정책으로 GitHub Pages가 막히면 연결이 안 됩니다. 휴대폰 LTE 등 다른 네트워크로 시험해 보세요.
+
+4. **주소 오타**  
+   저장소 이름과 동일하게 하이픈 포함: `NetWork-IP-Search` (공백 없음).
+
 ## 3) 주요 기능
 
 - 현재 네트워크 CIDR 자동 식별
