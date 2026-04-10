@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <title>Wi-Fi 도구 — NetWork-IP Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi8" />
+  </head>
+  <body class="page-wifi-tools">
+
+    <header class="topbar topbar--wifi-sub">
+      <div class="topbar-brand">
+        <div class="topbar-brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><path d="M12 20h.01"/>
+            <circle cx="12" cy="9" r="1.2" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="topbar-title">Wi-Fi 도구</h1>
+          <p class="topbar-sub">
+            링크 상태 · iperf3 · 주변 AP / 채널 분석
+            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi8</span>
+          </p>
+        </div>
+      </div>
+      <div class="topbar-wifi-actions">
+        <a class="btn btn-primary" href="{{ url_for('dashboard') }}">← 장치 대시보드</a>
+      </div>
+    </header>
+
+    <main class="dashboard-grid dashboard-grid--wifi-page">
+      {% include "_wifi_panels.html" %}
+    </main>
+
+    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi8"></script>
+  </body>
+</html>

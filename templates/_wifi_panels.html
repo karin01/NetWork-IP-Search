@@ -1,0 +1,130 @@
+{# Wi-Fi 링크·분석 카드 — /wifi 전용 페이지에서 include (메인 대시보드와 동일 마크업·ID 유지) #}
+      <section class="card card--wifi" id="card-wifi" aria-label="Wi-Fi 링크 및 처리량">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Wi-Fi 링크 · 처리량</h2>
+            <p class="card-sub">netsh 협상 속도(참고) · 선택적 iperf3 실측</p>
+          </div>
+          <button id="wifi-refresh-button" class="btn btn-primary" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+            Wi-Fi 새로고침
+          </button>
+        </div>
+        <div class="wifi-body">
+          <div id="wifi-message" class="wifi-message hidden"></div>
+          <div id="wifi-interfaces" class="wifi-interfaces"></div>
+          <p id="wifi-note" class="wifi-footnote"></p>
+          <div class="wifi-iperf-row">
+            <label class="wifi-iperf-label" for="wifi-iperf-host">iperf3 서버 IP</label>
+            <input id="wifi-iperf-host" class="inline-input wifi-iperf-host" type="text" placeholder="예: 192.168.0.10" />
+            <input id="wifi-iperf-port" class="inline-input wifi-iperf-num" type="number" value="5201" min="1" max="65535" title="포트" />
+            <input id="wifi-iperf-duration" class="inline-input wifi-iperf-num" type="number" value="5" min="2" max="60" title="초" />
+            <button id="wifi-iperf-button" class="btn btn-ghost" type="button">iperf3 실행</button>
+          </div>
+          <pre id="wifi-iperf-result" class="result-box wifi-iperf-box">iperf3 결과가 여기에 표시됩니다. (서버: <code>iperf3 -s</code>)</pre>
+        </div>
+      </section>
+
+      <section class="card card--wifi-analyzer" id="card-wifi-analyzer" aria-label="Wi-Fi 분석기">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Wi-Fi 분석기</h2>
+            <p class="card-sub">주변 BSSID · 신호 · 채널 혼잡도 (netsh 스캔, Wi-Fi Analyzer 유사)</p>
+          </div>
+          <div class="wifi-analyze-actions">
+            <label class="checkbox-label wifi-analyze-check">
+              <input id="wifi-analyze-refresh-netsh" type="checkbox" />
+              <span>스캔 새로고침(refresh)</span>
+            </label>
+            <label class="checkbox-label wifi-analyze-check" title="재스캔 후에도 SSID·밴드·BSSID·정렬 유지">
+              <input id="wifi-analyze-keep-filters" type="checkbox" />
+              <span>스캔 후 필터 유지</span>
+            </label>
+            <button id="wifi-analyze-button" class="btn btn-primary" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              주변 AP 스캔
+            </button>
+          </div>
+        </div>
+        <div class="wifi-analyze-body">
+          <div id="wifi-analyze-message" class="wifi-analyze-banner hidden"></div>
+          <p id="wifi-analyze-meta" class="wifi-analyze-meta"></p>
+          <p id="wifi-analyze-toast" class="wifi-analyze-toast hidden" role="status"></p>
+          <div id="wifi-analyze-summary" class="wifi-analyze-summary"></div>
+
+          <div class="wifi-analyze-filter-row">
+            <label class="wifi-analyze-filter-label" for="wifi-ssid-filter">SSID 필터</label>
+            <input
+              id="wifi-ssid-filter"
+              class="inline-input wifi-analyze-filter-input"
+              type="search"
+              list="wifi-ssid-datalist"
+              placeholder="부분 일치 (예: SK_ 또는 집)"
+              autocomplete="off"
+            />
+            <datalist id="wifi-ssid-datalist"></datalist>
+            <button id="wifi-analyze-filter-connected" class="btn btn-ghost" type="button" disabled title="merge=1 스캔 시 현재 연결 SSID로 채웁니다">연결 SSID로</button>
+            <button id="wifi-ssid-filter-clear" class="btn btn-ghost wifi-analyze-filter-clear" type="button">필터 초기화</button>
+          </div>
+
+          <div class="wifi-analyze-filter-row wifi-analyze-filter-row--secondary">
+            <label class="wifi-analyze-filter-label" for="wifi-band-filter">밴드</label>
+            <select id="wifi-band-filter" class="inline-input wifi-analyze-band-select" title="표시할 AP 밴드">
+              <option value="all">전체</option>
+              <option value="2.4">2.4 GHz</option>
+              <option value="5">5 GHz</option>
+              <option value="6">6 GHz·기타</option>
+            </select>
+            <label class="wifi-analyze-filter-label" for="wifi-bssid-filter">BSSID</label>
+            <input
+              id="wifi-bssid-filter"
+              class="inline-input wifi-analyze-bssid-input"
+              type="search"
+              placeholder="MAC 일부 (콜론 생략 가능)"
+              autocomplete="off"
+            />
+            <button id="wifi-analyze-csv-button" class="btn btn-ghost" type="button">필터 결과 CSV</button>
+            <button id="wifi-analyze-json-button" class="btn btn-ghost" type="button">필터 결과 JSON</button>
+            <button id="wifi-analyze-copy-tsv-button" class="btn btn-ghost" type="button">표 복사</button>
+          </div>
+
+          <div class="wifi-analyze-charts-grid">
+            <div class="wifi-analyze-chart-block">
+              <div class="wifi-analyze-chart-head">
+                <span class="wifi-analyze-chart-title">2.4 GHz · 채널별 AP 수</span>
+              </div>
+              <div class="wifi-analyze-chart-canvas-wrap">
+                <canvas id="wifi-channel-chart-24" width="400" height="172"></canvas>
+              </div>
+              <p id="wifi-channel-chart-caption-24" class="wifi-analyze-chart-caption"></p>
+            </div>
+            <div class="wifi-analyze-chart-block">
+              <div class="wifi-analyze-chart-head">
+                <span class="wifi-analyze-chart-title">5 GHz · 채널별 AP 수</span>
+              </div>
+              <div class="wifi-analyze-chart-canvas-wrap">
+                <canvas id="wifi-channel-chart-5" width="400" height="172"></canvas>
+              </div>
+              <p id="wifi-channel-chart-caption-5" class="wifi-analyze-chart-caption"></p>
+            </div>
+          </div>
+
+          <div class="table-scroll wifi-analyze-scroll">
+            <table class="device-table wifi-analyze-table">
+              <thead id="wifi-analyze-thead">
+                <tr>
+                  <th class="wifi-th-sortable" data-wifi-sort="ssid" scope="col" title="클릭하여 정렬">SSID</th>
+                  <th class="wifi-th-sortable" data-wifi-sort="bssid" scope="col" title="클릭하여 정렬">BSSID</th>
+                  <th class="wifi-th-sortable" data-wifi-sort="signal" scope="col" title="클릭하여 정렬">신호</th>
+                  <th class="wifi-th-sortable" data-wifi-sort="channel" scope="col" title="클릭하여 정렬">채널</th>
+                  <th class="wifi-th-sortable" data-wifi-sort="band" scope="col" title="클릭하여 정렬">밴드</th>
+                  <th class="wifi-th-sortable" data-wifi-sort="radio" scope="col" title="클릭하여 정렬">라디오</th>
+                  <th class="wifi-th-sortable" data-wifi-sort="auth" scope="col" title="클릭하여 정렬">인증</th>
+                </tr>
+              </thead>
+              <tbody id="wifi-analyze-tbody"></tbody>
+            </table>
+          </div>
+          <p id="wifi-analyze-disclaimer" class="wifi-footnote wifi-analyze-foot"></p>
+        </div>
+      </section>

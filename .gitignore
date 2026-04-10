@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+.env
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# 런타임 생성물
+outputs/
+uploads/
+
+# OS / IDE
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/

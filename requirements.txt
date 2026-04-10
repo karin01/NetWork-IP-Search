@@ -1,0 +1,13 @@
+flask
+scapy
+psutil
+paramiko
+pyyaml
+pysnmp
+netmiko
+fastapi
+uvicorn
+streamlit
+requests
+python-nmap
+pandas

@@ -1,0 +1,1304 @@
+/* ============================================================
+   NetWork-IP Search — 네트워크 장치 대시보드
+   디자인 참고: 딥 다크 네이비 + 시안/틸 포인트
+   기존 JS 로직 100% 호환 유지
+   ============================================================ */
+
+/* ── 1. 디자인 토큰 ──────────────────────────────────────── */
+:root {
+  /* 배경 계층 */
+  --bg:          #0b1120;
+  --bg-card:     #111827;
+  --bg-card-2:   #141e30;
+  --bg-input:    #0d1526;
+  --bg-row-h:    rgba(14, 159, 190, 0.06);
+
+  /* 포인트 컬러 */
+  --teal:        #0e9fbe;
+  --teal-dim:    rgba(14, 159, 190, 0.18);
+  --teal-glow:   rgba(14, 159, 190, 0.28);
+  --green:       #22c55e;
+  --green-dim:   rgba(34, 197, 94, 0.15);
+  --red:         #ef4444;
+  --red-dim:     rgba(239, 68, 68, 0.15);
+  --amber:       #f59e0b;
+  --blue:        #60a5fa;
+  --purple:      #a78bfa;
+
+  /* 텍스트 */
+  --tx-bright:   #e2e8f0;
+  --tx-main:     #94a3b8;
+  --tx-dim:      #475569;
+  --tx-white:    #ffffff;
+
+  /* 보더 */
+  --border:      rgba(255, 255, 255, 0.07);
+  --border-h:    rgba(14, 159, 190, 0.4);
+
+  /* 타이포 */
+  --ff-d: "Outfit", system-ui, sans-serif;
+  --ff-b: "Noto Sans KR", system-ui, sans-serif;
+
+  /* 전환 */
+  --t: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 헤더 높이 */
+  --topbar-h: 72px;
+}
+
+/* ── 2. 리셋 ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ff-b);
+  background: var(--bg);
+  color: var(--tx-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── 3. 상단 헤더 바 ─────────────────────────────────────── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--topbar-h);
+  background: rgba(11, 17, 32, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+}
+
+/* 브랜드 */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}
+
+.topbar-brand-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--teal), #0a7a96);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px var(--teal-glow);
+}
+
+.topbar-brand-icon svg { width: 20px; height: 20px; color: #fff; }
+
+.topbar-title {
+  font-family: var(--ff-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--tx-bright);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.topbar-sub {
+  font-size: 0.72rem;
+  color: var(--tx-dim);
+  margin-top: 1px;
+}
+
+.dashboard-build {
+  color: var(--teal);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* KPI 중앙 뱃지 */
+.topbar-kpis {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.topbar-kpi-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.45rem 1.4rem;
+}
+
+.topbar-kpi-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border);
+}
+
+.kpi-label {
+  font-size: 0.66rem;
+  color: var(--tx-dim);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.kpi-val {
+  font-family: var(--ff-d);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--teal);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.kpi-val--red    { color: var(--red); }
+.kpi-val--bright { color: var(--tx-bright); }
+
+.kpi-big .kpi-val { font-size: 1.8rem; }
+
+/* 우측 영역 */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+/* 네트워크 정보 */
+.net-info-items {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.net-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.net-info-label {
+  font-size: 0.62rem;
+  color: var(--tx-dim);
+}
+
+.net-info-val {
+  font-family: var(--ff-d);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--tx-bright);
+  white-space: nowrap;
+}
+
+/* 버튼 그룹 */
+.topbar-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ── 4. 버튼 ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: var(--ff-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--t);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+  box-shadow: 0 4px 16px var(--teal-glow);
+}
+
+.btn-primary:hover {
+  background: #0c8fab;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px var(--teal-glow);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--tx-main);
+  border-color: var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--border-h);
+  color: var(--teal);
+}
+
+/* 헤더의 앵커 바로가기(Wi-Fi 카드로 스크롤) */
+a.topbar-jump {
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.btn-full { width: 100%; margin-top: 0.6rem; }
+
+/* ── 5. 경고/에러 배너 ────────────────────────────────────── */
+.alert-banner {
+  margin: 0.75rem 1.5rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.alert-banner--warn {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--amber);
+}
+
+.alert-banner--error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--red);
+}
+
+.hidden { display: none !important; }
+
+/* ── 6. 대시보드 그리드 레이아웃 ─────────────────────────── */
+/*
+  [차트 그래프][장비핑거프린트]  ← 상단 2열
+  [────────── Wi-Fi 도구 CTA 전폭 ──────────]
+  [───────── 장치 목록 테이블 ─────────]  ← 중단 전폭
+  [로그 분석][자동화]  ← 하단 2열
+*/
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: minmax(min-content, auto);
+  gap: 1rem;
+  padding: 1rem 1.5rem 2rem;
+
+  grid-template-areas:
+    "history   fingerprint"
+    "wificta   wificta"
+    "devices   devices"
+    "log       automation"
+    "switch    switch";
+}
+
+/* /wifi 전용: 링크 카드 + 분석기만 세로 스택 */
+.dashboard-grid--wifi-page {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "wifi"
+    "wifian";
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#card-history     { grid-area: history; }
+#card-fingerprint { grid-area: fingerprint; }
+#card-wifi-cta    { grid-area: wificta; }
+#card-wifi        { grid-area: wifi; }
+#card-wifi-analyzer { grid-area: wifian; }
+#card-devices     { grid-area: devices; }
+#card-log         { grid-area: log; }
+#card-automation  { grid-area: automation; }
+#card-switch      { grid-area: switch; }
+
+/* 메인 대시보드: Wi-Fi 전용 페이지로 안내하는 CTA */
+.card--wifi-cta {
+  background: linear-gradient(135deg, rgba(14, 159, 190, 0.12), rgba(17, 24, 39, 0.95));
+  border-color: rgba(14, 159, 190, 0.35);
+}
+
+.wifi-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding: 1.15rem 1.35rem;
+}
+
+.wifi-cta-title {
+  font-family: var(--ff-d);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tx-bright);
+  letter-spacing: -0.02em;
+}
+
+.wifi-cta-desc {
+  font-size: 0.78rem;
+  color: var(--tx-main);
+  margin-top: 0.35rem;
+  max-width: 42rem;
+  line-height: 1.45;
+}
+
+.btn-wifi-cta-main {
+  flex-shrink: 0;
+  padding-left: 1.35rem;
+  padding-right: 1.35rem;
+  font-weight: 700;
+}
+
+/* 상단 바: Wi-Fi 하위 페이지 */
+.topbar--wifi-sub {
+  justify-content: space-between;
+}
+
+.topbar-wifi-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.topbar-wifi-link {
+  border: 1px solid rgba(14, 159, 190, 0.45);
+  color: var(--teal);
+}
+.topbar-wifi-link:hover {
+  background: var(--teal-dim);
+  border-color: var(--teal);
+}
+
+/* ── 7. 카드 공통 ────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+
+.card:hover {
+  border-color: rgba(14, 159, 190, 0.2);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* 카드 헤더 */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-family: var(--ff-b);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tx-bright);
+  line-height: 1.3;
+}
+
+.card-sub {
+  font-size: 0.72rem;
+  color: var(--tx-dim);
+  margin-top: 2px;
+}
+
+.card-icon {
+  width: 20px; height: 20px;
+  color: var(--tx-dim);
+  flex-shrink: 0;
+}
+
+/* ── 8. 접속 이력 그래프 카드 ────────────────────────────── */
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.73rem;
+  color: var(--tx-dim);
+  flex-shrink: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.dot--green { background: var(--green); }
+.dot--red   { background: var(--red); }
+.dot--blue  { background: var(--blue); }
+
+.chart-wrap {
+  flex: 1;
+  padding: 0.75rem 1rem 0.75rem;
+  position: relative;
+}
+
+/* 캔버스: 배경색 오버라이드 (기존 JS가 fillRect으로 배경 채우므로 투명하게) */
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  border-radius: 8px;
+  background: transparent !important;
+}
+
+/* ── 9. Wi-Fi 카드 ─────────────────────────────────────── */
+.card--wifi .wifi-body {
+  padding: 0 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wifi-message {
+  margin: 0 1.2rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: var(--amber);
+}
+
+.wifi-message--error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: var(--red);
+}
+
+.wifi-interfaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.5rem 1.2rem 0;
+}
+
+.wifi-iface {
+  flex: 1 1 240px;
+  min-width: 200px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+.wifi-iface-title {
+  font-family: var(--ff-d);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tx-bright);
+  margin-bottom: 0.35rem;
+}
+
+.wifi-iface-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--tx-main);
+}
+
+.wifi-iface-grid dt {
+  color: var(--tx-dim);
+  font-weight: 600;
+}
+
+.wifi-iface-grid dd {
+  margin: 0;
+  color: var(--tx-bright);
+  font-family: var(--ff-d);
+}
+
+.wifi-footnote {
+  font-size: 0.7rem;
+  color: var(--tx-dim);
+  line-height: 1.5;
+  padding: 0 1.2rem;
+  margin: 0;
+}
+
+.wifi-iperf-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1.2rem 0;
+}
+
+.wifi-iperf-label {
+  font-size: 0.75rem;
+  color: var(--tx-dim);
+  font-weight: 600;
+}
+
+.wifi-iperf-host {
+  flex: 1 1 160px;
+  min-width: 140px;
+}
+
+.wifi-iperf-num {
+  width: 88px;
+}
+
+.wifi-iperf-box {
+  max-height: 120px;
+  margin-top: 0.25rem;
+}
+
+.wifi-iperf-box code {
+  color: var(--teal);
+  font-size: 0.72rem;
+}
+
+/* Wi-Fi 분석기 카드 */
+.card--wifi-analyzer .wifi-analyze-body {
+  padding-bottom: 0.75rem;
+}
+
+.wifi-analyze-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.wifi-analyze-check {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.wifi-analyze-banner {
+  margin: 0 1.2rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  color: var(--amber);
+}
+
+.wifi-analyze-banner--error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.28);
+  color: var(--red);
+}
+
+.wifi-analyze-banner--ok {
+  background: rgba(14, 159, 190, 0.08);
+  border-color: rgba(14, 159, 190, 0.25);
+  color: var(--teal);
+}
+
+.wifi-analyze-meta {
+  font-size: 0.72rem;
+  color: var(--tx-dim);
+  padding: 0.25rem 1.2rem 0;
+  margin: 0;
+}
+
+.wifi-analyze-toast {
+  font-size: 0.75rem;
+  color: var(--teal);
+  padding: 0.2rem 1.2rem 0;
+  margin: 0;
+  font-weight: 600;
+}
+
+.wifi-analyze-toast.hidden {
+  display: none !important;
+}
+
+.wifi-analyze-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem 0.65rem;
+}
+
+.wifi-analyze-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  font-size: 0.76rem;
+  color: var(--tx-main);
+}
+
+.wifi-analyze-chip strong {
+  font-family: var(--ff-d);
+  color: var(--tx-bright);
+  font-size: 0.85rem;
+}
+
+.wifi-analyze-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1.2rem 0.5rem;
+}
+
+.wifi-analyze-filter-label {
+  font-size: 0.75rem;
+  color: var(--tx-dim);
+  font-weight: 600;
+}
+
+.wifi-analyze-filter-input {
+  flex: 1 1 200px;
+  min-width: 160px;
+  max-width: 360px;
+}
+
+.wifi-analyze-filter-clear {
+  flex-shrink: 0;
+}
+
+.wifi-analyze-filter-row--secondary {
+  padding-top: 0.15rem;
+}
+
+.wifi-analyze-band-select {
+  width: auto;
+  min-width: 118px;
+  flex: 0 0 auto;
+}
+
+.wifi-analyze-bssid-input {
+  flex: 1 1 160px;
+  min-width: 140px;
+  max-width: 280px;
+}
+
+.wifi-analyze-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0.35rem 1.2rem 0.65rem;
+}
+
+@media (max-width: 900px) {
+  .wifi-analyze-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wifi-analyze-chart-block {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.wifi-analyze-chart-head {
+  margin-bottom: 0.45rem;
+}
+
+.wifi-analyze-chart-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--tx-bright);
+}
+
+.wifi-analyze-chart-canvas-wrap {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.wifi-analyze-chart-canvas-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 200px;
+  background: #0d1526;
+}
+
+.wifi-analyze-chart-caption {
+  font-size: 0.68rem;
+  color: var(--tx-dim);
+  margin: 0.4rem 0 0;
+  line-height: 1.45;
+}
+
+.wifi-analyze-scroll {
+  max-height: 280px;
+  margin: 0 0.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.wifi-analyze-table th,
+.wifi-analyze-table td {
+  font-size: 0.76rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.wifi-analyze-table .wifi-th-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.wifi-analyze-table .wifi-th-sortable:hover {
+  color: var(--teal);
+}
+
+.wifi-analyze-table .wifi-th-sortable.wifi-th--active {
+  color: var(--teal);
+}
+
+.wifi-analyze-table .wifi-th-sortable.wifi-th--asc::after {
+  content: " ▲";
+  font-size: 0.65em;
+  opacity: 0.85;
+}
+
+.wifi-analyze-table .wifi-th-sortable.wifi-th--desc::after {
+  content: " ▼";
+  font-size: 0.65em;
+  opacity: 0.85;
+}
+
+/* 신호 열: 막대 + 퍼센트 */
+.wifi-signal-cell {
+  position: relative;
+  min-width: 88px;
+  min-height: 1.35rem;
+  padding: 2px 0;
+}
+
+.wifi-signal-cell--empty {
+  color: var(--tx-dim);
+}
+
+.wifi-signal-bar {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  max-width: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(14, 159, 190, 0.35), rgba(34, 197, 94, 0.45));
+  pointer-events: none;
+}
+
+.wifi-signal-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--ff-d);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--tx-bright);
+  padding-left: 4px;
+  text-shadow: 0 0 6px rgba(11, 17, 32, 0.9);
+}
+
+.wifi-analyze-foot {
+  padding-top: 0.5rem;
+}
+
+/* ── 10. 장비 핑거프린트 카드 ─────────────────────────────── */
+.fp-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.fp-kpi-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.9rem 0.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+.fp-kpi-item:last-child { border-right: none; }
+
+.fp-kpi-num {
+  font-family: var(--ff-d);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--teal);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.fp-kpi-item--success .fp-kpi-num { color: var(--green); }
+.fp-kpi-item--fail    .fp-kpi-num { color: var(--red); }
+.fp-kpi-item--rate    .fp-kpi-num { color: var(--amber); }
+
+.fp-kpi-label {
+  font-size: 0.7rem;
+  color: var(--tx-dim);
+  margin-top: 2px;
+}
+
+/* 핑거프린트 실패 사유 */
+.fp-reasons-wrap {
+  flex: 1;
+  padding: 0.75rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fp-reasons-label {
+  font-size: 0.72rem;
+  color: var(--tx-dim);
+  font-weight: 600;
+}
+
+.fp-reasons-box {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--tx-main);
+  white-space: pre-wrap;
+  overflow: auto;
+  max-height: 80px;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+/* ── 11. 장치 목록 테이블 카드 ───────────────────────────── */
+.table-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inline-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--tx-bright);
+  font-size: 0.78rem;
+  font-family: var(--ff-b);
+  padding: 0.35rem 0.8rem;
+  width: 200px;
+  transition: border-color var(--t);
+  outline: none;
+}
+
+.inline-input:focus { border-color: var(--teal); }
+
+.table-scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+.device-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  table-layout: auto;
+}
+
+.device-table thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.device-table th {
+  padding: 0.7rem 1rem;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--tx-dim);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.device-table td {
+  padding: 0.68rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--tx-main);
+  vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.device-table tbody tr {
+  transition: background var(--t);
+}
+
+.device-table tbody tr:hover {
+  background: var(--bg-row-h);
+}
+
+/* 상태 뱃지 */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-badge.online {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge.online::before {
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+}
+
+.status-badge.offline {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  animation: none;
+}
+
+.status-badge.offline::before {
+  background: var(--red);
+  animation: none;
+}
+
+.status-badge.unknown {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.status-badge.unknown::before {
+  background: var(--amber);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* ── 12. 로그 분석 카드 ──────────────────────────────────── */
+.upload-form {
+  padding: 0.75rem 1.2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 1px dashed rgba(14, 159, 190, 0.35);
+  border-radius: 8px;
+  color: var(--teal);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background var(--t), border-color var(--t);
+  background: var(--teal-dim);
+}
+
+.file-label:hover {
+  background: rgba(14, 159, 190, 0.25);
+  border-color: var(--teal);
+}
+
+/* ── 13. 자동화 카드 ─────────────────────────────────────── */
+.field-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--tx-dim);
+  font-weight: 600;
+  margin: 0.75rem 1.2rem 0.3rem;
+}
+
+.field-textarea {
+  display: block;
+  width: calc(100% - 2.4rem);
+  margin: 0 1.2rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--tx-bright);
+  font-family: var(--ff-b);
+  font-size: 0.82rem;
+  resize: none;
+  transition: border-color var(--t);
+  outline: none;
+}
+
+.field-textarea:focus { border-color: var(--teal); }
+
+.automation-opts {
+  padding: 0.5rem 1.2rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--tx-dim);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: var(--teal);
+  width: 15px; height: 15px;
+}
+
+/* 하단 버튼을 카드 하단에 붙이기 */
+.card--log .btn-full,
+.card--automation .btn-full {
+  margin: 0 1.2rem;
+  width: calc(100% - 2.4rem);
+}
+
+/* ── 14. 결과 박스 (공통) ────────────────────────────────── */
+.result-box {
+  margin: 0.6rem 1.2rem 1.2rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  max-height: 180px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 0.75rem;
+  color: var(--tx-main);
+  font-family: "Consolas", "Courier New", monospace;
+  flex: 1;
+}
+
+/* ── 15. 스위치 포트 현황 카드 ───────────────────────────── */
+.switch-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.switch-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.73rem;
+  color: var(--tx-dim);
+}
+
+.switch-placeholder {
+  padding: 1.5rem 1.2rem;
+  color: var(--tx-dim);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.switch-placeholder code {
+  color: var(--teal);
+  font-family: "Consolas", monospace;
+  font-size: 0.8rem;
+}
+
+.switch-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 스위치 1대 블록 */
+.switch-block {
+  border-top: 1px solid var(--border);
+  padding: 0.8rem 1.2rem;
+}
+
+.switch-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.switch-block-ip {
+  font-family: var(--ff-d);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tx-bright);
+}
+
+.switch-block-source {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tx-dim);
+  margin-left: 0.5rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.switch-block-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+}
+
+.stat-up   { color: var(--green); font-weight: 700; }
+.stat-down { color: var(--red);   font-weight: 700; }
+.stat-total{ color: var(--tx-dim); }
+
+.switch-block-error {
+  font-size: 0.78rem;
+  color: var(--red);
+  padding: 0.4rem 0;
+}
+
+/* 포트 격자 */
+.port-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.port-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  padding: 0.3rem 0.2rem;
+  border-radius: 6px;
+  font-size: 0.62rem;
+  text-align: center;
+  line-height: 1.3;
+  border: 1px solid;
+  cursor: default;
+  transition: transform var(--t);
+  position: relative;
+}
+
+.port-chip:hover { transform: scale(1.06); }
+
+.port-chip--up {
+  background: var(--green-dim);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: var(--green);
+}
+
+.port-chip--down {
+  background: var(--red-dim);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--red);
+}
+
+.port-chip--other {
+  background: rgba(71, 85, 105, 0.15);
+  border-color: rgba(71, 85, 105, 0.3);
+  color: var(--tx-dim);
+}
+
+.port-chip-name {
+  font-weight: 700;
+  font-size: 0.65rem;
+  word-break: break-all;
+}
+
+.port-chip-speed {
+  font-size: 0.58rem;
+  opacity: 0.75;
+  margin-top: 1px;
+}
+
+/* ── 16. 반응형 ──────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "history"
+      "fingerprint"
+      "wificta"
+      "devices"
+      "log"
+      "automation"
+      "switch";
+  }
+
+  .dashboard-grid--wifi-page {
+    grid-template-areas:
+      "wifi"
+      "wifian";
+  }
+
+  .topbar-kpis { display: none; }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .topbar-right { display: none; }
+
+  .dashboard-grid { padding: 0.75rem 1rem 2rem; }
+
+  .fp-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── 17. 스크롤바 ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 159, 190, 0.3);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 159, 190, 0.55);
+}

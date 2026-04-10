@@ -1,0 +1,2 @@
+2026-04-10 timeout while connecting
+2026-04-10 auth failed on device

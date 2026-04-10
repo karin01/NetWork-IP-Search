@@ -1,0 +1,3 @@
+ip,id,pw,device_type
+192.168.0.10,admin,change-me,cisco_ios
+192.168.0.20,admin,change-me,hp_comware

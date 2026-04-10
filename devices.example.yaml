@@ -1,0 +1,26 @@
+devices:
+  - ip: "192.168.0.10"
+    vendor: "cisco"
+    snmp:
+      # SNMPv3 권장 (v2c community는 보조)
+      v3_username: "snmpuser"
+      v3_auth_key: "change-auth-key"
+      v3_auth_protocol: "sha" # sha | md5
+      v3_priv_key: "change-priv-key"
+      v3_priv_protocol: "aes" # aes | des
+      community: "public"
+    ssh:
+      username: "admin"
+      password: "change-me"
+  - ip: "192.168.0.20"
+    vendor: "juniper"
+    snmp:
+      v3_username: "snmpuser"
+      v3_auth_key: "change-auth-key"
+      v3_auth_protocol: "sha"
+      v3_priv_key: "change-priv-key"
+      v3_priv_protocol: "aes"
+      community: "public"
+    ssh:
+      username: "admin"
+      password: "change-me"
