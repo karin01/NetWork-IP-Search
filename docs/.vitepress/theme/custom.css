@@ -1,0 +1,90 @@
+/* Portfolio 느낌: 다크 베이스 + 보라·시안 포인트 */
+:root {
+  --vp-c-brand-1: #c084fc;
+  --vp-c-brand-2: #a78bfa;
+  --vp-c-brand-3: #7c3aed;
+}
+
+.dark {
+  --vp-c-bg: #0b0b12;
+  --vp-c-bg-alt: #12121c;
+  --vp-c-bg-elv: #18182a;
+  --vp-c-border: rgba(167, 139, 250, 0.12);
+  --vp-c-divider: rgba(167, 139, 250, 0.08);
+}
+
+.VPHero {
+  padding: calc(var(--vp-nav-height) + 48px) 24px 56px;
+}
+
+.VPHero .heading .name {
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+}
+
+.VPHero .heading .text {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  background: linear-gradient(120deg, #e9d5ff 0%, #c084fc 40%, #f472b6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+.VPHero .tagline {
+  font-size: 1.05rem;
+  opacity: 0.88;
+  max-width: 38rem;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.65;
+}
+
+.VPHero .actions .VPButton.brand {
+  background: linear-gradient(135deg, #7c3aed, #db2777) !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+.VPHero .actions .VPButton.alt {
+  border-color: rgba(192, 132, 252, 0.45) !important;
+}
+
+.VPFeature .icon {
+  font-size: 2rem;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.35), rgba(244, 114, 182, 0.2));
+  border-radius: 12px;
+  width: 3.25rem;
+  height: 3.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VPFeatures .container .items .grid > * {
+  border-radius: 14px;
+  border: 1px solid rgba(167, 139, 250, 0.15);
+  background: rgba(24, 24, 42, 0.5);
+}
+
+.home-after {
+  max-width: 720px;
+  margin: 0 auto 4rem;
+  padding: 0 24px;
+}
+
+.home-after table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.home-after th,
+.home-after td {
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+}
+
+.home-after th {
+  background: rgba(124, 58, 237, 0.15);
+}

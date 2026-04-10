@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NetWork-IP Search — LAN · Wi‑Fi · 자동화</title>
+    <meta
+      name="description"
+      content="Windows PC에서 동작하는 네트워크 스캔·Wi‑Fi 분석·장비 자동화 허브. 온라인에서는 소개 페이지, 실시간 대시보드는 로컬에서 실행합니다."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <header class="top-bar">
+      <a class="brand" href="./">NetWork-IP Search</a>
+      <nav class="top-nav" aria-label="주요 링크">
+        <a href="#about">소개</a>
+        <a href="#run">실행 방법</a>
+        <a href="manual/">문서</a>
+        <a
+          href="https://github.com/karin01/NetWork-IP-Search"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >
+      </nav>
+    </header>
+
+    <aside class="side-social" aria-label="소셜">
+      <a
+        href="https://github.com/karin01/NetWork-IP-Search"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="GitHub"
+        >GH</a
+      >
+      <a href="manual/" title="문서">DOC</a>
+    </aside>
+
+    <main>
+      <section class="hero">
+        <p class="hero-kicker">✦ LAN 스캔 · Wi‑Fi · 로컬 대시보드</p>
+        <h1 class="hero-title">
+          같은 Wi‑Fi 안의 장치를<br />
+          <span class="gradient-text">한 화면에서</span> 보고 다룹니다.
+        </h1>
+        <p class="hero-lead">
+          Windows에서 돌아가는 네트워크 허브예요. IP·ARP·간단한 Wi‑Fi 도구까지 —
+          브라우저로 열어 쓰는 개인용 패널입니다.
+        </p>
+        <p class="hero-note">
+          이 주소(<strong>GitHub Pages</strong>)는 <strong>웹 소개 페이지</strong>입니다.
+          그래프와 실시간 스캔은 PC에서 서버를 켠 뒤 접속해 주세요.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/karin01/NetWork-IP-Search"
+            target="_blank"
+            rel="noopener noreferrer"
+            >저장소 보기</a
+          >
+          <a class="btn btn-ghost" href="#run">로컬에서 열기</a>
+        </div>
+      </section>
+
+      <section id="about" class="section">
+        <h2 class="section-title">무엇을 하나요</h2>
+        <ul class="feature-list">
+          <li>
+            <strong>LAN 장치</strong> — 스캔 결과를 대시보드에서 정리해 봅니다.
+          </li>
+          <li>
+            <strong>Wi‑Fi</strong> — 전용 화면에서 netsh·주변 AP·채널 등을 다룹니다 (Windows).
+          </li>
+          <li>
+            <strong>문서</strong> — API·로그 랩·자동화는 <a href="manual/">문서 사이트</a>에서 확인합니다.
+          </li>
+        </ul>
+      </section>
+
+      <section id="run" class="section section-card">
+        <h2 class="section-title">실시간 대시보드 여는 법</h2>
+        <ol class="steps">
+          <li>GitHub에서 저장소를 클론하거나 ZIP으로 받습니다.</li>
+          <li>폴더에서 <code>run_dashboard.bat</code> 또는 <code>대시보드 열기.bat</code>을 실행합니다.</li>
+          <li>브라우저에서 <code class="hl">http://127.0.0.1:5000</code> 을 엽니다.</li>
+          <li>Wi‑Fi 전용은 <code class="hl">http://127.0.0.1:5000/wifi</code> 입니다.</li>
+        </ol>
+        <p class="fine-print">
+          GitHub Pages는 정적 호스팅만 가능해 Python 서버를 띄울 수 없습니다. 그래서
+          <a href="https://karin01.github.io/Portfolio/">Portfolio</a>처럼 “웹사이트”는 여기,
+          <strong>앱 본체</strong>는 로컬에서 돌아가는 구조입니다.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>NetWork-IP Search · GitHub Pages</p>
+      <p>
+        <a href="manual/">문서</a>
+        ·
+        <a href="https://github.com/karin01/NetWork-IP-Search">소스 코드</a>
+      </p>
+    </footer>
+  </body>
+</html>

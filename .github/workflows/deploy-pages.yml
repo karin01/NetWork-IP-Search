@@ -1,11 +1,10 @@
-# GitHub Pages: VitePress 빌드 후 gh-pages 브랜치에 푸시
+# GitHub Pages: 루트 = Portfolio 스타일 단독 랜딩(site-landing), /manual/ = VitePress 문서
 # 저장소 Settings → Pages → Source: Deploy from a branch → gh-pages / (root)
-# (upload-pages-artifact 방식은 Pages 소스를 "GitHub Actions"로 바꿔야 해서 404가 자주 남)
 name: Deploy docs to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:
@@ -27,7 +26,7 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install and build VitePress
+      - name: Install and build VitePress (/manual/)
         working-directory: docs
         env:
           GITHUB_ACTIONS: "true"
@@ -35,9 +34,16 @@ jobs:
           npm install
           npm run docs:build
 
+      - name: Assemble site (랜딩 + manual)
+        run: |
+          mkdir -p _site
+          cp -r site-landing/. _site/
+          mkdir -p _site/manual
+          cp -r docs/.vitepress/dist/. _site/manual/
+
       - name: Push to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/.vitepress/dist
+          publish_dir: ./_site
           force_orphan: true
