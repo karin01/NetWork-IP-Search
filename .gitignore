@@ -15,6 +15,9 @@ build/
 outputs/
 uploads/
 
+# Node (VitePress docs)
+node_modules/
+
 # OS / IDE
 Thumbs.db
 .DS_Store

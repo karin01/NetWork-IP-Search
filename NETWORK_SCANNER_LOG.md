@@ -51,6 +51,7 @@
 - VBS `ShellExecute` + 한글 경로는 여전히 **경로 깨짐**(run_dashboard.bat 찾을 수 없음) → **`run_dashboard.bat`에서 자동 관리자 승격 제거**, ARP 필요 시 **우클릭 관리자 실행** 안내; `대시보드 열기.bat`은 **`pushd "%~dp0"` 후 `call run_dashboard.bat`**(상대 경로만 넘김)
 - `. was unexpected at this time`: `if (...)` **괄호 블록 안의 `echo` 문에 리터럴 `(` `)`** 가 있으면 CMD가 블록을 중간에 끊음 → `(folder ...)` 등은 **`^(` `^)`** 로 이스케이프
 - `python: can't open file 'G:\\내'`: 한글·공백 경로에서 `start cmd /k "cd ... && python ...\app.py"` **중첩 따옴표가 깨져** 스크립트 경로가 `G:\내` 로 잘림 → **`start /D "%PROJROOT%" cmd /k ""%PYEXE%" app.py"`** (작업 폴더만 지정, `app.py`는 상대 경로)
+- GitHub Pages: `.github/workflows/deploy-pages.yml` 로 VitePress `docs/` 배포, `config.mjs` 의 `base` 는 `GITHUB_ACTIONS` 일 때만 `/NetWork-IP-Search/` (로컬 `docs:dev` 는 `/`)
 
 ## 운영 메모
 

@@ -18,6 +18,14 @@ python app.py
 
 브라우저에서 `http://127.0.0.1:5000` 접속
 
+## 2-1) GitHub Pages (기술 매뉴얼)
+
+Flask 대시보드는 서버가 필요해 Pages에 호스팅할 수 없고, **`docs/` VitePress 문서**만 배포합니다.
+
+1. GitHub 저장소 **Settings → Pages → Build and deployment** 에서 **Source: GitHub Actions** 선택  
+2. `main`에 푸시하면 워크플로 **Deploy docs to GitHub Pages** 가 빌드·배포  
+3. 주소: **https://karin01.github.io/NetWork-IP-Search/**
+
 ## 3) 주요 기능
 
 - 현재 네트워크 CIDR 자동 식별

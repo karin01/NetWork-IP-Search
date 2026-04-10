@@ -1,4 +1,8 @@
+// 로컬 `npm run docs:dev` 는 `/` , GitHub Actions 빌드는 `GITHUB_ACTIONS` 로 서브경로 배포
+const base = process.env.GITHUB_ACTIONS ? "/NetWork-IP-Search/" : "/";
+
 export default {
+  base,
   title: "NetWork-IP Search 매뉴얼",
   description: "로그 분석, 장비 자동화, 네트워크 대시보드 운영 문서",
   themeConfig: {
