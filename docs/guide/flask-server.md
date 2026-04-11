@@ -104,4 +104,5 @@ python app.py
 ## 6. 다음 단계
 
 - 기능 개요·주의사항: [시작하기](./getting-started)
+- 스위치 포트(IF-MIB·Cisco SSH 보조): [스위치 포트 가이드](./switch-ports)
 - REST API: [API 레퍼런스](../reference/api)

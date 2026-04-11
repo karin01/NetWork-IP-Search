@@ -19,6 +19,7 @@ export default {
       },
       { text: "시작하기", link: "/guide/getting-started" },
       { text: "Flask 실행", link: "/guide/flask-server" },
+      { text: "스위치 포트", link: "/guide/switch-ports" },
       { text: "레퍼런스", link: "/reference/api" },
       { text: "GitHub", link: "https://github.com/karin01/NetWork-IP-Search" },
     ],
@@ -28,6 +29,7 @@ export default {
         items: [
           { text: "시작하기", link: "/guide/getting-started" },
           { text: "Flask 서버 실행 (대시보드)", link: "/guide/flask-server" },
+          { text: "스위치 포트 (Cisco·Juniper·기타)", link: "/guide/switch-ports" },
           { text: "로그 분석 랩", link: "/guide/log-lab" },
           { text: "장비 자동화", link: "/guide/automation" }
         ]

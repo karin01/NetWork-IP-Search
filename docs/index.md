@@ -18,6 +18,9 @@ hero:
       text: 시작하기 (개요)
       link: /guide/getting-started
     - theme: alt
+      text: 스위치 포트 가이드
+      link: /guide/switch-ports
+    - theme: alt
       text: 프로젝트 웹 홈
       link: https://karin01.github.io/NetWork-IP-Search/
 
@@ -28,6 +31,9 @@ features:
   - icon: 📶
     title: Wi‑Fi 도구
     details: /wifi 에서 netsh 링크·iperf3·주변 AP·채널 차트. Windows + 로컬 서버 필요
+  - icon: 🔌
+    title: 스위치 포트
+    details: IF-MIB SNMP + Cisco SSH 보조. 벤더별 설정은「스위치 포트」가이드 참고
   - icon: 📚
     title: 이 경로는 문서(/manual/)
     details: API·로그 랩·SNMP·배포 안내. 정적 호스팅이라 Python 백엔드는 돌리지 않습니다.
@@ -41,6 +47,7 @@ features:
 | --- | --- |
 | **실시간 대시보드** | [Flask 서버 실행 가이드](/guide/flask-server) → `http://127.0.0.1:5000` |
 | **Wi‑Fi 전용 페이지** | 서버 실행 후 `http://127.0.0.1:5000/wifi` |
+| **스위치 포트 (Cisco·Juniper 등)** | [벤더별 가이드](/guide/switch-ports) |
 | **REST API 설명** | [API 레퍼런스](/reference/api) |
 
 </div>

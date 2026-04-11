@@ -1,4 +1,11 @@
-﻿# API 레퍼런스
+# API 레퍼런스
+
+## GET /api/switch/ports
+
+인벤토리 YAML에 정의된 스위치들의 **포트 UP/DOWN**(IF-MIB)을 반환합니다. Cisco는 SNMP 실패 시 SSH 보조 가능.
+
+- 쿼리: `inventory_path` — 예: `devices.yaml` (프로젝트 루트 기준 경로)
+- 상세·벤더별 SNMP 설정: [스위치 포트 가이드](../guide/switch-ports)
 
 ## GET /api/scan
 
