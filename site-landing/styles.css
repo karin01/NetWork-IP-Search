@@ -548,6 +548,10 @@ main {
 
 .manual-cta {
   margin: 1.25rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
 }
 
 .btn--sm {
