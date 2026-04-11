@@ -63,6 +63,10 @@
 - **가시성**: `scan_duration_ms`, `dashboard-summary`에 스캔 소요·이력·프로필 요약
 - `.gitignore`에 `scan_history.sqlite`, 빌드 태그·정적 `?v=wifi10`, 스모크 테스트 이력 API
 
+## 2026-04-11 (git)
+
+- Git 커밋 `b78320c` (branch `main`): 스캔 이력 SQLite·diff·Webhook·스캔 프로필(CIDR 오버라이드), `app_settings.py`·`/settings`·관련 API, 대시보드 Wi-Fi·iperf 패널 복귀·레이아웃·캐시 버전, 주기 스캔 시 핑거프린트 패널 초기화 제거, 진단용 `GET /api/nwip-whoami`·build-info 별칭, `run_dashboard.bat`·`check_dashboard_template.py` 보강, Docker·VitePress 문서·`tests/test_smoke.py` 포함.
+
 ## 향후 기능 아이디어 (브레인스토밍, 2026-04-11)
 
 - **스캔 이력 영구 저장**: 세션 그래프를 넘어 SQLite 등으로 스냅샷 저장·날짜 범위 조회·“어제 대비 신규/사라진 MAC” diff.
