@@ -12,7 +12,10 @@ hero:
     alt: NetWork-IP Search
   actions:
     - theme: brand
-      text: 시작하기 (설치·실행)
+      text: Flask 서버 켜기 (대시보드)
+      link: /guide/flask-server
+    - theme: alt
+      text: 시작하기 (개요)
       link: /guide/getting-started
     - theme: alt
       text: 프로젝트 웹 홈
@@ -20,8 +23,8 @@ hero:
 
 features:
   - icon: 🖥️
-    title: 대시보드는 로컬에서
-    details: run_dashboard.bat 또는 python app.py 실행 후 http://127.0.0.1:5000 — 같은 Wi‑Fi의 다른 기기는 PC의 192.168.x.x:5000
+    title: Flask 서버 → 대시보드
+    details: 가이드「Flask 서버 실행」에 배치 파일·수동 명령·포트 변경·방화벽·Wi‑Fi 접속까지 정리. 실행 후 127.0.0.1:5000
   - icon: 📶
     title: Wi‑Fi 도구
     details: /wifi 에서 netsh 링크·iperf3·주변 AP·채널 차트. Windows + 로컬 서버 필요
@@ -36,7 +39,7 @@ features:
 
 | 할 일 | 주소 / 방법 |
 | --- | --- |
-| **실시간 대시보드** | PC에서 서버 실행 → `http://127.0.0.1:5000` |
+| **실시간 대시보드** | [Flask 서버 실행 가이드](/guide/flask-server) → `http://127.0.0.1:5000` |
 | **Wi‑Fi 전용 페이지** | 서버 실행 후 `http://127.0.0.1:5000/wifi` |
 | **REST API 설명** | [API 레퍼런스](/reference/api) |
 

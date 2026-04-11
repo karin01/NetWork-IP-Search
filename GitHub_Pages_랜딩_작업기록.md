@@ -29,6 +29,10 @@
 
 GitHub Pages는 **정적 파일만** 서빙합니다. Flask 대시보드는 **로컬**(또는 PaaS)에서 실행합니다.
 
+## 매뉴얼에 Flask 실행 가이드
+
+- `docs/guide/flask-server.md` — 배치·수동 실행·포트·트러블슈팅. 사이드바·홈 히어로 CTA 연결.
+
 ## 대시보드를 “웹에서” 보는 해결책 (Pages로는 불가)
 
 - 같은 Wi‑Fi: `http://PC사설IP:5000` + 방화벽 허용  
