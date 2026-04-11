@@ -200,8 +200,10 @@
         <ul class="feature-list">
           <li><strong>공통</strong> — SNMP IF-MIB (UDP 161). <code>devices.example.yaml</code> 참고.</li>
           <li><strong>Cisco</strong> — SNMP 우선 · 실패 시 SSH <code>show interfaces status</code> (vendor에 <code>cisco</code> 포함).</li>
-          <li><strong>Juniper</strong> — SNMP 필수 (SSH 포트 파싱 없음).</li>
-          <li><strong>HPE / Aruba / 기타</strong> — 표준 IF-MIB 응답 시 동일하게 동작 · SSH 보조는 Cisco 전용.</li>
+          <li><strong>Juniper / HPE / Aruba</strong> — SNMP(IF-MIB) 필수.</li>
+          <li><strong>유비쿼티(UniFi·에지 등)</strong> — 펌웨어별 SNMP 설정 후 관리 IP로 수집 · SSH 보조 없음.</li>
+          <li><strong>다산</strong> — 제품 SNMP 메뉴에서 community/v3·허용 호스트 설정.</li>
+          <li><strong>Dovado·다보링크 등 SOHO</strong> — SNMP·IF-MIB 제공 시만 유효, 미지원 기기는 포트 기능 사용 어려움.</li>
         </ul>
         <p class="manual-cta">
           <a class="btn btn-primary btn--sm" href="manual/guide/switch-ports.html">스위치 포트 — 벤더별 상세 매뉴얼</a>
