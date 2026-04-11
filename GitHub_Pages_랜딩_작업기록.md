@@ -29,6 +29,12 @@
 
 GitHub Pages는 **정적 파일만** 서빙합니다. Flask 대시보드는 **로컬**(또는 PaaS)에서 실행합니다.
 
+## 대시보드를 “웹에서” 보는 해결책 (Pages로는 불가)
+
+- 같은 Wi‑Fi: `http://PC사설IP:5000` + 방화벽 허용  
+- 임시 외부: ngrok 등 터널  
+- 상시: Railway / Render / VPS 등에 Flask 배포 — README `2-2` 절 참고
+
 ## 로컬 빌드 참고
 
 `docs` 가 Google Drive 동기 경로에 있으면 `npm install` 이 실패할 수 있어, CI 빌드를 기준으로 두는 것이 안전합니다.
