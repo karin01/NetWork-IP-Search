@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi15" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi17" />
   </head>
   <body class="page-wifi-tools">
 
@@ -25,7 +25,7 @@
           <h1 class="topbar-title">Wi-Fi 도구</h1>
           <p class="topbar-sub">
             링크 상태 · iperf3 · 주변 AP / 채널 분석
-            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi15</span>
+            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi17</span>
           </p>
         </div>
       </div>
@@ -38,6 +38,6 @@
       {% include "_wifi_panels.html" %}
     </main>
 
-    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi15"></script>
+    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi17"></script>
   </body>
 </html>

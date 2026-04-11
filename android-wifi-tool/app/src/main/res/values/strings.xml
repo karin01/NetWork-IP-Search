@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wi‑Fi 도구</string>
+    <string name="section_current">현재 연결</string>
+    <string name="section_scan">주변 AP (스캔)</string>
+    <string name="btn_refresh">연결 정보 새로고침</string>
+    <string name="btn_scan">주변 스캔</string>
+    <string name="hint_permissions">위치·주변 기기 권한을 허용해야 SSID와 스캔 결과가 올바르게 보일 수 있습니다.</string>
+    <string name="hint_throttle">시스템이 Wi‑Fi 스캔 횟수를 제한할 수 있습니다. 잠시 후 다시 시도하세요.</string>
+    <string name="wifi_disabled">Wi‑Fi가 꺼져 있습니다. 설정에서 켜 주세요.</string>
+    <string name="scan_empty">스캔 결과가 없습니다. 권한·Wi‑Fi 상태를 확인하세요.</string>
+</resources>

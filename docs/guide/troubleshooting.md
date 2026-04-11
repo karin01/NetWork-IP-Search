@@ -13,7 +13,7 @@
 | --- | --- |
 | 연결 거부 | `python app.py` 또는 배치 파일로 서버가 떠 있는지, 포트 `NETWORK_IP_SEARCH_PORT` 확인 |
 | 401 텍스트 | `NETWORK_IP_SEARCH_TOKEN` 설정됨 → URL에 `?token=값` 또는 API 헤더 `X-NetWork-IP-Token` |
-| 다른 PC에서 안 됨 | `127.0.0.1` 대신 서버 PC의 `192.168.x.x:5000`, Windows 방화벽 인바운드 |
+| 다른 PC에서 안 됨 | `127.0.0.1` 대신 서버 PC의 `192.168.x.x:8500`, Windows 방화벽 인바운드 |
 
 ## 스캔 / 권한
 

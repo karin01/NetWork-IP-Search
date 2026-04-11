@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="wifi_primary">#1565C0</color>
+    <color name="wifi_on_primary">#FFFFFF</color>
+    <color name="wifi_background">#F5F7FA</color>
+</resources>

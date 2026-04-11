@@ -6,7 +6,7 @@ hero:
   text: LAN 스캔 · Wi‑Fi 분석 · 장비 자동화
   tagline: |
     기술 문서(가이드·API) 영역입니다. Portfolio처럼 보이는 소개 웹 페이지는 저장소 Pages 루트에서 열립니다.
-    실시간 대시보드는 PC에서 서버 실행 후 http://127.0.0.1:5000 으로 접속하세요.
+    실시간 대시보드는 PC에서 서버 실행 후 http://127.0.0.1:8500 으로 접속하세요.
   image:
     src: /favicon.svg
     alt: NetWork-IP Search
@@ -30,7 +30,7 @@ hero:
 features:
   - icon: 🖥️
     title: Flask 서버 → 대시보드
-    details: 가이드「Flask 서버 실행」에 배치 파일·수동 명령·포트 변경·방화벽·Wi‑Fi 접속까지 정리. 실행 후 127.0.0.1:5000
+    details: 가이드「Flask 서버 실행」에 배치 파일·수동 명령·포트 변경·방화벽·Wi‑Fi 접속까지 정리. 실행 후 127.0.0.1:8500
   - icon: 📶
     title: Wi‑Fi 도구
     details: /wifi 에서 netsh 링크·iperf3·주변 AP·채널 차트. Windows + 로컬 서버 필요
@@ -48,8 +48,8 @@ features:
 
 | 할 일 | 주소 / 방법 |
 | --- | --- |
-| **실시간 대시보드** | [Flask 서버 실행 가이드](/guide/flask-server) → `http://127.0.0.1:5000` |
-| **Wi‑Fi 전용 페이지** | 서버 실행 후 `http://127.0.0.1:5000/wifi` |
+| **실시간 대시보드** | [Flask 서버 실행 가이드](/guide/flask-server) → `http://127.0.0.1:8500` |
+| **Wi‑Fi 전용 페이지** | 서버 실행 후 `http://127.0.0.1:8500/wifi` |
 | **스위치 포트 (Cisco·Juniper 등)** | [벤더별 가이드](/guide/switch-ports) |
 | **시리얼(콘솔) 접속** | [장비별 Baud·명령](/guide/serial-console) |
 | **REST API 설명** | [API 레퍼런스](/reference/api) |

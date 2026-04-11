@@ -35,17 +35,19 @@ echo ========================================
 for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /i "IPv4"') do (
     set "LANIP=%%a"
     set "LANIP=!LANIP: =!"
-    echo   http://!LANIP!:5000
+    echo   http://!LANIP!:8500
     goto :after_ip
 )
 :after_ip
-echo   http://127.0.0.1:5000
+echo   http://127.0.0.1:8500
 echo ========================================
 echo.
-echo [INFO] Dashboard: browser = UI, this CMD = server logs only. Build wifi15. Wi-Fi-only page:
-echo        http://127.0.0.1:5000/wifi
-echo        Stale UI? Open http://127.0.0.1:5000/api/nwip-whoami
+echo [INFO] Dashboard: browser = UI, this CMD = server logs only. Build wifi17. Wi-Fi-only page:
+echo        http://127.0.0.1:8500/wifi
+echo        Stale UI? Open http://127.0.0.1:8500/api/nwip-whoami
 echo        build-info: template_has_wifi_cta = main has Wi-Fi+iperf cards; wifi_panels_has_analyzer = true.
+echo [INFO] Live Map (Streamlit, separate from Flask): cd network_ops ^&^& streamlit run live_map_dashboard.py
+echo        Usually http://127.0.0.1:8501 — uses live_map/hosts.yaml, NOT this Flask page.
 echo.
 
 set "PYEXE=python"
@@ -71,19 +73,19 @@ if errorlevel 1 (
 )
 
 echo.
-echo [INFO] After server starts: http://127.0.0.1:5000/api/nwip-whoami  ^(then /api/build-info^)
-echo [WARN] If whoami shows 404: another app may already use port 5000, or wrong folder.
-echo        Check LISTENING lines below ^(then close that PID in Task Manager or use set NETWORK_IP_SEARCH_PORT=5001^):
-netstat -ano | findstr ":5000"
+echo [INFO] After server starts: http://127.0.0.1:8500/api/nwip-whoami  ^(then /api/build-info^)
+echo [WARN] If whoami shows 404: another app may already use port 8500, or wrong folder.
+echo        Check LISTENING lines below ^(then close that PID in Task Manager or use set NETWORK_IP_SEARCH_PORT=8501^):
+netstat -ano | findstr ":8500"
 echo.
 
 REM WHY: Nested quotes break when PROJROOT has spaces (Korean path). START /D sets CWD; pass app.py as relative name only.
-start "NetWork-IP Flask 5000" /D "%PROJROOT%" cmd /k ""%PYEXE%" app.py"
+start "NetWork-IP Flask 8500" /D "%PROJROOT%" cmd /k ""%PYEXE%" app.py"
 timeout /t 2 /nobreak >nul
-start "" "http://127.0.0.1:5000/api/nwip-whoami"
+start "" "http://127.0.0.1:8500/api/nwip-whoami"
 timeout /t 1 /nobreak >nul
-start "" "http://127.0.0.1:5000/?nocache=1"
+start "" "http://127.0.0.1:8500/?nocache=1"
 
-echo Browser opened. Flask runs in the cmd window titled NetWork-IP Flask 5000.
+echo Browser opened. Flask runs in the cmd window titled NetWork-IP Flask 8500.
 pause
 endlocal

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.WifiTool" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/wifi_primary</item>
+        <item name="colorSurface">@color/wifi_background</item>
+        <item name="android:statusBarColor">@color/wifi_primary</item>
+    </style>
+</resources>

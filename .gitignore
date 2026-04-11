@@ -20,6 +20,12 @@ user_settings.json
 devices.secret.yaml
 scan_history.sqlite
 
+# network_ops 비밀·로그
+network_ops/secrets.enc
+network_ops/secrets.plain.yaml
+network_ops/network_ops.log
+network_ops/live_map/hosts.yaml
+
 # Node (VitePress docs)
 node_modules/
 
@@ -28,3 +34,11 @@ Thumbs.db
 .DS_Store
 .idea/
 .vscode/
+
+# Android (폰 단독 Wi‑Fi 앱)
+android-wifi-tool/.gradle/
+android-wifi-tool/**/build/
+android-wifi-tool/local.properties
+android-wifi-tool/*.iml
+android-wifi-tool/.idea/
+android-wifi-tool/captures/

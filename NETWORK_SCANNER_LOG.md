@@ -67,6 +67,29 @@
 
 - Git 커밋 `b78320c` (branch `main`): 스캔 이력 SQLite·diff·Webhook·스캔 프로필(CIDR 오버라이드), `app_settings.py`·`/settings`·관련 API, 대시보드 Wi-Fi·iperf 패널 복귀·레이아웃·캐시 버전, 주기 스캔 시 핑거프린트 패널 초기화 제거, 진단용 `GET /api/nwip-whoami`·build-info 별칭, `run_dashboard.bat`·`check_dashboard_template.py` 보강, Docker·VitePress 문서·`tests/test_smoke.py` 포함.
 
+## 2026-04-11 (안드로이드 단독 Wi‑Fi 앱)
+
+- 저장소 하위 **`android-wifi-tool/`** 에 Kotlin + Material3 단일 모듈 앱 추가 (`com.networkip.wifitool`). PC Flask와 **코드 공유 없음**; `WifiManager`·`NetworkCapabilities`로 현재 연결 정보, 스캔 콜백 + `startScan`으로 주변 AP 목록 표시.
+- 권한: `ACCESS_FINE_LOCATION`, Android 13+ `NEARBY_WIFI_DEVICES`(neverForLocation), `CHANGE_WIFI_STATE` 등. 빌드: Gradle 8.7 wrapper, `gradlew assembleDebug`, 안내는 `android-wifi-tool/README.md`. 루트 `.gitignore`에 Android 빌드 산출물 제외.
+- **APK 빌드(로컬)**: 구글 드라이브 한글 경로 대응으로 `gradle.properties`에 `android.overridePathCheck=true` 추가; 컴파일 오류 대응으로 `minSdk` 29·스캔 콜백은 `Executor`만 사용·Wi‑Fi 표준은 정수 매핑. 디버그 APK: `android-wifi-tool/app/build/outputs/apk/debug/app-debug.apk`. SDK 경로는 `local.properties`의 `sdk.dir`(Git 제외).
+
+## 2026-04-11 (wifi16 · Live Map 안내)
+
+- 메인 Flask 대시보드와 Live Map은 **별도 앱**이라 동일 URL에서 탭이 생기지 않음을 사용자 혼동 방지: `dashboard.html` 시스템 요약에 Streamlit 실행 안내 박스 추가, `run_dashboard.bat`에 `streamlit run live_map_dashboard.py` 안내.
+- **Flask 기본 포트 8500** (`app.py` 기본값·`run_dashboard.bat`·Dockerfile·README·문서), 빌드 태그 `wifi17`.
+
+## 2026-04-11 (인프라 생존 지도 Live Map)
+
+- `network_ops/live_map/`: `hosts.yaml` 인벤토리(서버·네트워크 분리), Ping·TCP 포트·SSH/WinRM/Netmiko 읽기 전용 수집, `pipeline.MAX_WORKERS=10`.
+- `live_map_dashboard.py` Streamlit — 서버/네트워크 탭, scatter 요약, 원격 명령 탭(파괴적 명령은 PIN·확인 문구).
+- `run_live_map_prompt.py` + `live_map/infra_prompt.py` 통합 CLI; `live_map/safety.py` 2차 확인. `pywinrm` requirements 추가, `live_map/hosts.yaml` gitignore.
+
+## 2026-04-11 (network_ops 백업·비밀·알림)
+
+- `network_ops/network_ops.log`: SSH 접속 시도·세션 수립·저장·연결 종료·예외 스택까지 시간 순 기록 (`ops_logging.py` + `backup_configs.py` 개편).
+- 설정 백업(`.cfg`) **이전 스냅샷과 unified diff** 후 변경 시 **SMTP·텔레그램** 알림 (`backup_compare.py`, `ops_notify.py`, `notify_on_config_change`).
+- 비밀번호·토큰: 코드 미사용, `secrets.enc`(PBKDF2+salt 또는 Fernet 키)·터미널 `getpass`·환경 변수 (`ops_secrets.py`, `encrypt_secrets.py`, `secrets.plain.example.yaml`). `requirements.txt`에 `cryptography`, `.gitignore`에 `secrets.enc` 등.
+
 ## 향후 기능 아이디어 (브레인스토밍, 2026-04-11)
 
 - **스캔 이력 영구 저장**: 세션 그래프를 넘어 SQLite 등으로 스냅샷 저장·날짜 범위 조회·“어제 대비 신규/사라진 MAC” diff.

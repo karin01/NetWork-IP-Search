@@ -22,7 +22,7 @@ from wifi_metrics import get_wifi_status, run_iperf3_client
 
 # WHY: 작업 디렉터리와 무관하게 항상 이 app.py 옆 templates/static만 사용 (다른 복사본 혼동 방지)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-BUILD_TAG = "wifi15"
+BUILD_TAG = "wifi17"
 
 app = Flask(
     __name__,
@@ -643,7 +643,7 @@ def get_switch_ports():
 if __name__ == "__main__":
     # WHY: debug=False로 설정해 운영 환경에서 디버거 노출을 차단합니다.
     # WHY: PaaS(Railway 등)는 PORT 를 주고, 로컬은 NETWORK_IP_SEARCH_PORT 우선
-    _port = int(os.environ.get("NETWORK_IP_SEARCH_PORT") or os.environ.get("PORT") or "5000")
+    _port = int(os.environ.get("NETWORK_IP_SEARCH_PORT") or os.environ.get("PORT") or "8500")
     _tpl = os.path.join(BASE_DIR, "templates", "dashboard.html")
     print(f"[NetWork-IP Search] BUILD={BUILD_TAG}")
     print(f"[NetWork-IP Search] app.py = {os.path.abspath(__file__)}")

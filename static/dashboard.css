@@ -1339,6 +1339,27 @@ canvas {
   color: var(--tx-dim);
 }
 
+/* Live Map(Streamlit)은 Flask와 별도 앱 — 사용자 혼동 방지 안내 */
+.dashboard-live-map-hint {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.08);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--tx-muted, #a8b0c0);
+}
+.dashboard-live-map-hint code {
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.dashboard-live-map-hint a {
+  color: var(--accent, #38bdf8);
+}
+
 /* 스캔 이력·diff 카드 — main.dashboard-grid 안 전폭 행(scanhist), 좌우 여백은 그리드 padding 과 맞춤 */
 .card--history-diff {
   margin: 0;

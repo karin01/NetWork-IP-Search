@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi15" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi17" />
   </head>
   <body>
 
@@ -30,7 +30,7 @@
           <h1 class="topbar-title">네트워크 장치 대시보드</h1>
           <p class="topbar-sub">
             장치 탐지 및 연결 상태 실시간 모니터링
-            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi15</span>
+            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi17</span>
           </p>
         </div>
       </div>
@@ -133,6 +133,17 @@
         CMD(검은 창)은 <strong>Flask 서버 로그</strong>만 보여 줍니다(netstat·진단 URL 안내 등). 표·Wi-Fi·그래프는
         <strong>이 브라우저 탭</strong>에 나옵니다. CMD 창을 닫으면 서버가 꺼져 새로고침이 되지 않습니다.
       </p>
+      <div class="dashboard-live-map-hint" role="note">
+        <strong>인프라 생존 지도(Live Map)</strong>는 이 페이지(Flask)가 아니라
+        <strong>별도 Streamlit 앱</strong>입니다. 서버/네트워크 탭·WinRM·SSH·Netmiko 병렬 점검은
+        <code>network_ops/live_map_dashboard.py</code>를 실행해야 합니다.
+        <br />
+        예: 프로젝트 폴더에서 <code>cd network_ops</code> 후
+        <code>streamlit run live_map_dashboard.py</code> → 브라우저에서 보통
+        <a href="http://127.0.0.1:8501" target="_blank" rel="noopener">http://127.0.0.1:8501</a>
+        (포트는 터미널에 표시된 주소를 따르세요).
+        인벤토리는 Flask용 <code>devices*.yaml</code>과 별도로 <code>live_map/hosts.yaml</code>을 씁니다.
+      </div>
     </section>
 
     <main class="dashboard-grid">
@@ -334,6 +345,6 @@
 
     </main>
 
-    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi15"></script>
+    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi17"></script>
   </body>
 </html>

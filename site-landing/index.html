@@ -141,7 +141,7 @@
         <p class="url-hint" id="copyFeedback" role="status" aria-live="polite"></p>
         <p class="url-note">
           반면 <strong>실시간 스캔 대시보드</strong>(그래프·장치 목록)는 Python 서버가 돌아가는 PC가 있어야 합니다.
-          그 PC에서 실행한 뒤 <code class="inline-code">http://그PC의IP:5000</code> 으로 같은 Wi‑Fi 기기에서 테스트하세요.
+          그 PC에서 실행한 뒤 <code class="inline-code">http://그PC의IP:8500</code> 으로 같은 Wi‑Fi 기기에서 테스트하세요.
         </p>
         <p class="url-note url-note--warn">
           <strong>여기로 들어왔는데 README만 보이나요?</strong> GitHub 저장소
@@ -177,15 +177,15 @@
           <li>저장소 클론 또는 ZIP 해제 후 폴더로 이동.</li>
           <li>
             <strong><code>run_dashboard.bat</code></strong> 또는 <strong><code>대시보드 열기.bat</code></strong> 실행 → 제목
-            <code class="hl">NetWork-IP Flask 5000</code> 인 CMD 창이 떠 있어야 합니다.
+            <code class="hl">NetWork-IP Flask 8500</code> 인 CMD 창이 떠 있어야 합니다.
           </li>
-          <li>브라우저: <code class="hl">http://127.0.0.1:5000</code> · Wi‑Fi 전용 <code class="hl">http://127.0.0.1:5000/wifi</code></li>
+          <li>브라우저: <code class="hl">http://127.0.0.1:8500</code> · Wi‑Fi 전용 <code class="hl">http://127.0.0.1:8500/wifi</code></li>
           <li>
             (선택) 가상환경·수동 실행:
             <code class="hl">python -m venv .venv</code> → <code class="hl">.venv\Scripts\activate</code> →
             <code class="hl">pip install -r requirements.txt</code> → <code class="hl">python app.py</code>
           </li>
-          <li>포트 변경: 환경 변수 <code class="hl">NETWORK_IP_SEARCH_PORT</code> (예: 8080) 후 <code class="hl">python app.py</code></li>
+          <li>포트: 기본 <code class="hl">8500</code>. 바꾸려면 환경 변수 <code class="hl">NETWORK_IP_SEARCH_PORT</code> 후 <code class="hl">python app.py</code></li>
         </ol>
         <p class="manual-cta">
           <a class="btn btn-primary btn--sm" href="manual/guide/flask-server.html">Flask 서버 실행 — 전체 매뉴얼</a>
@@ -216,7 +216,7 @@
         <h2 class="section-title">한 줄 요약</h2>
         <p class="fine-print">
           <strong>소개·매뉴얼:</strong> 지금 도메인(또는 <a href="manual/">/manual/</a>) ·
-          <strong>대시보드:</strong> PC에서 Flask 실행 후 <code class="hl">127.0.0.1:5000</code> ·
+          <strong>대시보드:</strong> PC에서 Flask 실행 후 <code class="hl">127.0.0.1:8500</code> ·
           GitHub Pages는 정적 파일만 호스팅합니다.
         </p>
       </section>

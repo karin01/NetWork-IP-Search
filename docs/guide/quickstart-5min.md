@@ -9,8 +9,8 @@
    pip install -r requirements.txt
    ```
 4. **서버 실행** — **`run_dashboard.bat`** 또는 `python app.py`  
-5. **브라우저** — [http://127.0.0.1:5000](http://127.0.0.1:5000)  
-6. **Wi‑Fi 도구** — [http://127.0.0.1:5000/wifi](http://127.0.0.1:5000/wifi) (Windows)
+5. **브라우저** — [http://127.0.0.1:8500](http://127.0.0.1:8500)
+6. **Wi‑Fi 도구** — [http://127.0.0.1:8500/wifi](http://127.0.0.1:8500/wifi) (Windows)
 
 **스위치·SNMP** — `devices.example.yaml` 을 복사해 경로를 맞춘 뒤 [스위치 포트](/guide/switch-ports) 참고.
 
@@ -19,6 +19,6 @@
 $env:NETWORK_IP_SEARCH_TOKEN = "임의의_긴_문자열"
 python app.py
 ```
-브라우저는 `http://127.0.0.1:5000/?token=임의의_긴_문자열` 로 처음 연다.
+브라우저는 `http://127.0.0.1:8500/?token=임의의_긴_문자열` 로 처음 연다.
 
 다음: [Flask 서버 상세](/guide/flask-server) · [트러블슈팅](/guide/troubleshooting) · [클라우드 배포 참고](/guide/cloud-deploy)

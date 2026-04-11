@@ -1,0 +1,45 @@
+# 인벤토리 예시 — 복사 후 hosts.yaml 로 저장하고 값·환경 변수를 맞추세요.
+# 비밀번호는 코드/파일에 평문으로 두지 말고 ssh_password_env / winrm_password_env 이름의 환경 변수에만 두세요.
+
+servers:
+  - id: linux-app-01
+    hostname: "192.168.1.10"
+    role: "앱서버"
+    os_type: "linux" # windows | linux
+    ssh_port: 22
+    ssh_user: "admin"
+    ssh_password_env: "LIVE_MAP_SSH_LINUX_APP01"
+    check_ports: [22, 80, 443]
+    status_command: "uname -n; uptime -p"
+
+  - id: win-srv-01
+    hostname: "192.168.1.20"
+    role: "윈도우서버"
+    os_type: "windows"
+    winrm_port: 5985
+    winrm_transport: "ntlm"
+    winrm_user: "Administrator"
+    winrm_password_env: "LIVE_MAP_WINRM_PASS"
+    check_ports: [5985, 445]
+    status_command: "hostname"
+
+network_devices:
+  - id: sw-access-01
+    hostname: "192.168.1.1"
+    role: "L2스위치"
+    netmiko_device_type: "cisco_ios"
+    ssh_port: 22
+    ssh_user: "admin"
+    ssh_password_env: "LIVE_MAP_NET_SW01"
+    check_ports: [22]
+    status_command: "show version | include Version"
+
+  - id: rt-edge-01
+    hostname: "192.168.1.254"
+    role: "라우터"
+    netmiko_device_type: "cisco_ios"
+    ssh_port: 22
+    ssh_user: "admin"
+    ssh_password_env: "LIVE_MAP_NET_RT01"
+    check_ports: [22]
+    status_command: "show version | include Version"
