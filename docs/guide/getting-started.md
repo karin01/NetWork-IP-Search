@@ -5,7 +5,8 @@
 :::
 
 **서버 실행만 따로 보기:** [Flask 서버 실행하기 (대시보드)](/guide/flask-server) — 배치 파일, 수동 명령, 포트 변경, 오류 대응까지 모아 두었습니다.  
-**스위치 포트:** [스위치 포트 (벤더별)](/guide/switch-ports) — Cisco·Juniper·HPE·유비쿼티·다산·Dovado/다보링크 등 SNMP 요약.
+**스위치 포트:** [스위치 포트 (벤더별)](/guide/switch-ports) — Cisco·Juniper·HPE·유비쿼티·다산·Dovado/다보링크 등 SNMP 요약.  
+**시리얼 콘솔:** [장비별 콘솔 명령](/guide/serial-console) — Baud·`show`/`display` 예시.
 
 ## 0. 한 번에 열기 (Windows)
 

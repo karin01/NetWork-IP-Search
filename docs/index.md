@@ -48,6 +48,7 @@ features:
 | **실시간 대시보드** | [Flask 서버 실행 가이드](/guide/flask-server) → `http://127.0.0.1:5000` |
 | **Wi‑Fi 전용 페이지** | 서버 실행 후 `http://127.0.0.1:5000/wifi` |
 | **스위치 포트 (Cisco·Juniper 등)** | [벤더별 가이드](/guide/switch-ports) |
+| **시리얼(콘솔) 접속** | [장비별 Baud·명령](/guide/serial-console) |
 | **REST API 설명** | [API 레퍼런스](/reference/api) |
 
 </div>

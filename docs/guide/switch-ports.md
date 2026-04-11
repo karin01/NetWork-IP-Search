@@ -7,6 +7,8 @@
 스위치 기능을 쓰려면 **Flask 서버가 실행 중**이어야 합니다. [Flask 서버 실행](./flask-server)을 먼저 완료하세요.
 :::
 
+**시리얼(콘솔)로 접속해 IP·SNMP를 맞출 때:** [시리얼 콘솔 — 장비별 명령](./serial-console)
+
 ## 1. 인벤토리 파일 (공통)
 
 프로젝트 루트의 **`devices.example.yaml`** 을 복사해 예를 들어 `devices.yaml` 로 두고, 실제 IP·계정으로 수정합니다.
