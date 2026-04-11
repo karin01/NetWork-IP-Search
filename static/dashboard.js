@@ -56,9 +56,44 @@ const wifiAnalyzeFilterConnectedButton = document.getElementById("wifi-analyze-f
 const wifiAnalyzeJsonButton = document.getElementById("wifi-analyze-json-button");
 const wifiAnalyzeCopyTsvButton = document.getElementById("wifi-analyze-copy-tsv-button");
 const wifiAnalyzeToastElement = document.getElementById("wifi-analyze-toast");
+const historySnapshotSelectElement = document.getElementById("history-snapshot-select");
+const historyDiffButtonElement = document.getElementById("history-diff-button");
+const historySnapshotsRefreshElement = document.getElementById("history-snapshots-refresh");
+const historyDiffResultElement = document.getElementById("history-diff-result");
 
 /** 장치 스캔·테이블이 있는 메인 대시보드(/)인지 — /wifi 는 Wi-Fi 카드만 있어 API 폴링·리스너를 건너뜁니다. */
 const isMainDeviceDashboard = Boolean(refreshButtonElement && deviceTableBodyElement);
+
+// WHY: NETWORK_IP_SEARCH_TOKEN 사용 시 브라우저가 API를 호출할 수 있도록 헤더에 실어 보냅니다.
+function nwipCaptureTokenFromUrl() {
+  try {
+    const t = new URLSearchParams(window.location.search).get("token");
+    if (t) {
+      sessionStorage.setItem("nwip_token", t);
+    }
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+function nwipToken() {
+  try {
+    return sessionStorage.getItem("nwip_token") || "";
+  } catch (e) {
+    return "";
+  }
+}
+
+function nwipAuthHeaders() {
+  const t = nwipToken();
+  return t ? { "X-NetWork-IP-Token": t } : {};
+}
+
+/** 인증 헤더를 합친 fetch (API 호출용). */
+function nwipFetch(url, options = {}) {
+  const headers = { ...nwipAuthHeaders(), ...(options.headers || {}) };
+  return fetch(url, { ...options, headers });
+}
 
 /** 마지막으로 성공한 Wi-Fi 분석 API 응답(필터·차트 재계산용). */
 let lastWifiAnalyzePayload = null;
@@ -208,7 +243,7 @@ async function fetchWifiStatus() {
     wifiRefreshButtonElement.disabled = true;
   }
   try {
-    const response = await fetch("/api/wifi/status");
+    const response = await nwipFetch("/api/wifi/status");
     const payload = await response.json();
     if (!payload.ok) {
       renderWifiStatus({ ok: false, message: payload.error || "API 오류" });
@@ -246,7 +281,7 @@ if (wifiIperfButtonElement) {
       wifiIperfResultElement.textContent = "iperf3 실행 중...";
     }
     try {
-      const response = await fetch("/api/wifi/iperf", {
+      const response = await nwipFetch("/api/wifi/iperf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -866,7 +901,7 @@ async function fetchWifiAnalyze() {
   wifiAnalyzeButtonElement.disabled = true;
   try {
     const query = new URLSearchParams({ refresh: useRefresh ? "1" : "0", merge: "1" });
-    const response = await fetch(`/api/wifi/analyze?${query.toString()}`);
+    const response = await nwipFetch(`/api/wifi/analyze?${query.toString()}`);
     const payload = await response.json();
     if (!payload.ok) {
       renderWifiAnalyze({ ok: false, message: payload.error || "API 오류" });
@@ -1174,6 +1209,106 @@ function drawHistoryChart(historyList) {
   context.fillText(`최대값: ${maxValue}`, width - 90, paddingTop + 10);
 }
 
+/** 상단 시스템 요약 카드(/api/dashboard-summary). */
+async function fetchDashboardSummary() {
+  const buildEl = document.getElementById("summary-build");
+  if (!buildEl) {
+    return;
+  }
+  try {
+    const response = await nwipFetch("/api/dashboard-summary");
+    const payload = await response.json();
+    if (!payload.ok) {
+      return;
+    }
+    buildEl.textContent = payload.build_tag || "—";
+    const npcapEl = document.getElementById("summary-npcap");
+    if (npcapEl) {
+      if (payload.npcap_installed === true) {
+        npcapEl.textContent = "감지됨";
+      } else if (payload.npcap_installed === false) {
+        npcapEl.textContent = "없음(ARP는 ping 폴백 가능)";
+      } else {
+        npcapEl.textContent = "—(비 Windows)";
+      }
+    }
+    const invEl = document.getElementById("summary-inventory");
+    if (invEl) {
+      const exists = payload.inventory_exists ? "✓" : "✗";
+      invEl.textContent = `${exists} ${payload.inventory_path || ""}`;
+    }
+    const authEl = document.getElementById("summary-auth");
+    if (authEl) {
+      authEl.textContent = payload.access_token_configured ? "켜짐" : "끔";
+    }
+    const lastEl = document.getElementById("summary-last-scan");
+    if (lastEl) {
+      const t = payload.last_scan_at || "—";
+      const tot = payload.last_scan_total != null ? ` · 총 ${payload.last_scan_total}대` : "";
+      lastEl.textContent = `${t}${tot}`;
+    }
+    const scanMsEl = document.getElementById("summary-scan-ms");
+    if (scanMsEl) {
+      const ms = payload.last_scan_duration_ms;
+      scanMsEl.textContent = ms != null && !Number.isNaN(Number(ms)) ? `${ms} ms` : "—";
+    }
+    const histProfEl = document.getElementById("summary-history-profile");
+    if (histProfEl) {
+      const histOn = payload.history_enabled ? "이력 켜짐" : "이력 꺼짐";
+      const lastSnap = payload.history_last_snapshot_at || "저장 없음";
+      const prof = payload.active_profile_label || "자동";
+      histProfEl.textContent = `${histOn} · 마지막 저장 ${lastSnap} · 프로필 ${prof}`;
+    }
+    const warnLine = document.getElementById("summary-warning-line");
+    if (warnLine) {
+      warnLine.textContent = payload.warning_from_last_scan || "";
+    }
+  } catch (e) {
+    /* 요약 실패는 치명적이지 않음 */
+  }
+}
+
+/** /api/history/snapshots 로 셀렉트 박스 채우기 */
+async function loadHistorySnapshots() {
+  if (!historySnapshotSelectElement || !historyDiffResultElement) {
+    return;
+  }
+  try {
+    const response = await nwipFetch("/api/history/snapshots?limit=80");
+    const payload = await response.json();
+    if (!payload.ok) {
+      historyDiffResultElement.textContent = payload.error || "이력 목록을 불러오지 못했습니다.";
+      return;
+    }
+    const rows = payload.data || [];
+    const prevValue = historySnapshotSelectElement.value;
+    historySnapshotSelectElement.innerHTML = "";
+    if (!rows.length) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "(저장된 스냅샷 없음)";
+      historySnapshotSelectElement.appendChild(opt);
+      historyDiffResultElement.textContent =
+        "아직 스냅샷이 없습니다. 설정에서 이력을 켠 뒤, 최소 간격(기본 60초)마다 자동 저장됩니다.";
+      return;
+    }
+    rows.forEach((row) => {
+      const opt = document.createElement("option");
+      opt.value = String(row.id);
+      const summary = row.summary || {};
+      const on = summary.online_count != null ? summary.online_count : "?";
+      opt.textContent = `#${row.id} · ${row.scanned_at || ""} · 온라인 ${on} · ${row.network || ""}`;
+      historySnapshotSelectElement.appendChild(opt);
+    });
+    if (prevValue && [...historySnapshotSelectElement.options].some((o) => o.value === prevValue)) {
+      historySnapshotSelectElement.value = prevValue;
+    }
+    historyDiffResultElement.textContent = "스냅샷을 고른 뒤 「현재와 비교」를 누르세요.";
+  } catch (err) {
+    historyDiffResultElement.textContent = `이력 로드 오류: ${err.message || err}`;
+  }
+}
+
 async function fetchNetworkScan() {
   if (!refreshButtonElement) {
     return;
@@ -1181,7 +1316,7 @@ async function fetchNetworkScan() {
   refreshButtonElement.disabled = true;
 
   try {
-    const response = await fetch("/api/scan");
+    const response = await nwipFetch("/api/scan");
     const payload = await response.json();
 
     if (!payload.ok) {
@@ -1210,7 +1345,7 @@ async function fetchNetworkScan() {
     updateDeviceTable(scanData.devices);
     drawHistoryChart(scanData.history || []);
     setWarningMessage(scanData.warning_message || "");
-    updateFingerprintSummary(null);
+    // WHY: 주기 스캔마다 핑거프린트 요약을 지우면 「장비 정보」 직후에도 다음 폴링에서 0으로 돌아갑니다.
     setErrorMessage("");
   } catch (error) {
     setWarningMessage("");
@@ -1221,15 +1356,17 @@ async function fetchNetworkScan() {
 }
 
 if (isMainDeviceDashboard) {
+  nwipCaptureTokenFromUrl();
   refreshButtonElement.addEventListener("click", fetchNetworkScan);
   exportCsvButtonElement.addEventListener("click", () => {
-    window.location.href = "/api/export/csv";
+    const t = nwipToken();
+    window.location.href = t ? `/api/export/csv?token=${encodeURIComponent(t)}` : "/api/export/csv";
   });
 
   fingerprintButtonElement.addEventListener("click", async () => {
     fingerprintButtonElement.disabled = true;
     try {
-      const response = await fetch("/api/device/fingerprint", {
+      const response = await nwipFetch("/api/device/fingerprint", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ inventory_path: inventoryInputElement.value }),
@@ -1275,7 +1412,7 @@ if (isMainDeviceDashboard) {
     logAnalyzeButtonElement.disabled = true;
     try {
       const formData = new FormData(logAnalyzeFormElement);
-      const response = await fetch("/api/log/analyze", {
+      const response = await nwipFetch("/api/log/analyze", {
         method: "POST",
         body: formData,
       });
@@ -1295,7 +1432,7 @@ if (isMainDeviceDashboard) {
   automationRunButtonElement.addEventListener("click", async () => {
     automationRunButtonElement.disabled = true;
     try {
-      const response = await fetch("/api/automation/run", {
+      const response = await nwipFetch("/api/automation/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1316,12 +1453,68 @@ if (isMainDeviceDashboard) {
     }
   });
 
-  // WHY: 장치 연결 상태 변화를 보기 쉽게 10초마다 자동으로 갱신합니다.
-  fetchNetworkScan();
-  setInterval(fetchNetworkScan, 10000);
+  // WHY: 설정의 스캔 주기(초)를 반영하고, 요약은 60초마다 갱신합니다.
+  (async () => {
+    let intervalMs = 10000;
+    try {
+      const r = await nwipFetch("/api/settings");
+      const p = await r.json();
+      if (p.ok && p.data && inventoryInputElement && p.data.inventory_path) {
+        inventoryInputElement.value = p.data.inventory_path;
+      }
+      if (p.ok && p.data && p.data.scan_interval_seconds >= 5) {
+        intervalMs = p.data.scan_interval_seconds * 1000;
+      }
+    } catch (e) {
+      /* 기본 10초 */
+    }
+    fetchDashboardSummary();
+    fetchNetworkScan();
+    loadHistorySnapshots();
+    setInterval(fetchNetworkScan, intervalMs);
+    setInterval(fetchDashboardSummary, 60000);
+  })();
+
+  if (historyDiffButtonElement && historySnapshotSelectElement) {
+    historyDiffButtonElement.addEventListener("click", async () => {
+      const sid = historySnapshotSelectElement.value;
+      if (!sid) {
+        if (historyDiffResultElement) {
+          historyDiffResultElement.textContent = "비교할 스냅샷을 선택하세요.";
+        }
+        return;
+      }
+      historyDiffButtonElement.disabled = true;
+      if (historyDiffResultElement) {
+        historyDiffResultElement.textContent = "비교 중…";
+      }
+      try {
+        const response = await nwipFetch(`/api/history/diff?from_id=${encodeURIComponent(sid)}`);
+        const payload = await response.json();
+        if (!payload.ok) {
+          throw new Error(payload.error || "diff 실패");
+        }
+        if (historyDiffResultElement) {
+          historyDiffResultElement.textContent = JSON.stringify(payload.data, null, 2);
+        }
+      } catch (err) {
+        if (historyDiffResultElement) {
+          historyDiffResultElement.textContent = `오류: ${err.message || err}`;
+        }
+      } finally {
+        historyDiffButtonElement.disabled = false;
+      }
+    });
+  }
+  if (historySnapshotsRefreshElement) {
+    historySnapshotsRefreshElement.addEventListener("click", () => {
+      loadHistorySnapshots();
+    });
+  }
 }
 
 // WHY: Wi-Fi 링크는 스캔과 독립이므로 Wi-Fi 카드가 있을 때만 초기 1회 로드합니다.
+nwipCaptureTokenFromUrl();
 if (wifiRefreshButtonElement) {
   fetchWifiStatus();
 }
@@ -1439,7 +1632,9 @@ async function fetchSwitchPorts() {
 
   try {
     const inventoryPath = document.getElementById("inventory-input")?.value || "devices.example.yaml";
-    const response = await fetch(`/api/switch/ports?inventory_path=${encodeURIComponent(inventoryPath)}`);
+    const response = await nwipFetch(
+      `/api/switch/ports?inventory_path=${encodeURIComponent(inventoryPath)}`
+    );
     const payload  = await response.json();
 
     if (!payload.ok) {

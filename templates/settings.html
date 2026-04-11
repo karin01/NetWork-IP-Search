@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>설정 — NetWork-IP Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi15" />
+    <style>
+      .settings-wrap { max-width: 640px; margin: 2rem auto; padding: 0 1.25rem; }
+      .settings-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+      }
+      .settings-card h1 { font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--tx-bright); }
+      .settings-card p.note { font-size: 0.88rem; color: var(--tx-dim); margin-bottom: 1.25rem; line-height: 1.5; }
+      .settings-card h2 { font-size: 1rem; margin: 1.25rem 0 0.65rem; color: var(--teal); }
+      .field { margin-bottom: 1.1rem; }
+      .field label { display: block; font-size: 0.8rem; color: var(--tx-dim); margin-bottom: 0.35rem; }
+      .field input[type="text"],
+      .field input[type="number"],
+      .field input[type="url"],
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 0.6rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg-input);
+        color: var(--tx-bright);
+        font-size: 0.95rem;
+      }
+      .field textarea { min-height: 120px; font-family: ui-monospace, monospace; font-size: 0.82rem; }
+      .field-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+      .field-row input[type="checkbox"] { width: auto; }
+      .settings-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 1.25rem; }
+      #settings-msg { margin-top: 1rem; font-size: 0.88rem; min-height: 1.4em; }
+      .settings-msg--ok { color: var(--green); }
+      .settings-msg--err { color: var(--red); }
+    </style>
+  </head>
+  <body>
+    <div class="settings-wrap">
+      <div class="settings-card">
+        <h1>대시보드 설정</h1>
+        <p class="note">
+          값은 프로젝트 폴더의 <code style="color: var(--teal)">user_settings.json</code> 에만 저장되며 Git에 올라가지 않습니다.
+          스캔 이력 DB는 <code>scan_history.sqlite</code> (Git 제외)입니다. Webhook URL은 비밀 취급하세요.
+        </p>
+        <form id="settings-form">
+          <h2>기본</h2>
+          <div class="field">
+            <label for="inventory_path">인벤토리 YAML 경로 (프로젝트 루트 기준)</label>
+            <input type="text" id="inventory_path" name="inventory_path" autocomplete="off" placeholder="devices.example.yaml" />
+          </div>
+          <div class="field">
+            <label for="scan_interval_seconds">자동 스캔 주기 (초, 5~3600)</label>
+            <input type="number" id="scan_interval_seconds" name="scan_interval_seconds" min="5" max="3600" step="1" />
+          </div>
+
+          <h2>스캔 프로필</h2>
+          <p class="note" style="margin-top:0">활성 프로필에 CIDR을 넣으면 그 대역을 스캔합니다. CIDR을 비우면 항상 PC가 붙은 사설망을 자동 탐지합니다.</p>
+          <div class="field">
+            <label for="active_profile_id">활성 프로필</label>
+            <select id="active_profile_id" name="active_profile_id">
+              <option value="">(자동 탐지)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="scan_profiles_json">프로필 목록 (JSON 배열)</label>
+            <textarea id="scan_profiles_json" name="scan_profiles_json" spellcheck="false" placeholder='[{"id":"home","name":"집","network_cidr":"192.168.0.0/24"}]'></textarea>
+          </div>
+
+          <h2>스캔 이력 (SQLite)</h2>
+          <div class="field field-row">
+            <input type="checkbox" id="history_enabled" name="history_enabled" />
+            <label for="history_enabled" style="margin:0">스냅샷 저장 사용</label>
+          </div>
+          <div class="field">
+            <label for="history_max_snapshots">최대 보관 개수 (10~5000)</label>
+            <input type="number" id="history_max_snapshots" name="history_max_snapshots" min="10" max="5000" step="1" />
+          </div>
+          <div class="field">
+            <label for="history_min_interval_seconds">저장 최소 간격 (초, 10~86400)</label>
+            <input type="number" id="history_min_interval_seconds" name="history_min_interval_seconds" min="10" max="86400" step="1" />
+          </div>
+
+          <h2>Webhook 알림 (선택)</h2>
+          <p class="note" style="margin-top:0">직전 스캔 대비 이번 스캔에서 온라인 집합이 바뀔 때만 전송합니다. 첫 스캔은 기준이 없어 알림하지 않습니다.</p>
+          <div class="field">
+            <label for="alert_webhook_url">POST URL (비우면 전송 안 함)</label>
+            <input type="url" id="alert_webhook_url" name="alert_webhook_url" autocomplete="off" placeholder="https://..." />
+          </div>
+          <div class="field field-row">
+            <input type="checkbox" id="alert_on_new_mac" name="alert_on_new_mac" />
+            <label for="alert_on_new_mac" style="margin:0">신규 온라인 키(MAC·IP) 감지 시</label>
+          </div>
+          <div class="field field-row">
+            <input type="checkbox" id="alert_on_mac_gone" name="alert_on_mac_gone" />
+            <label for="alert_on_mac_gone" style="margin:0">사라진 온라인 키 감지 시</label>
+          </div>
+
+          <div class="settings-actions">
+            <button type="submit" class="btn btn-primary">저장</button>
+            <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">← 대시보드</a>
+          </div>
+        </form>
+        <p id="settings-msg"></p>
+      </div>
+    </div>
+    <script>
+      (function () {
+        function token() {
+          try {
+            var q = new URLSearchParams(location.search).get("token");
+            if (q) sessionStorage.setItem("nwip_token", q);
+            return sessionStorage.getItem("nwip_token") || "";
+          } catch (e) {
+            return "";
+          }
+        }
+        function authHeaders() {
+          var t = token();
+          return t ? { "X-NetWork-IP-Token": t } : {};
+        }
+
+        function fillProfileSelect(selectEl, profiles, activeId) {
+          selectEl.innerHTML = "";
+          var opt0 = document.createElement("option");
+          opt0.value = "";
+          opt0.textContent = "(자동 탐지)";
+          selectEl.appendChild(opt0);
+          (profiles || []).forEach(function (p) {
+            if (!p || !p.id) return;
+            var o = document.createElement("option");
+            o.value = p.id;
+            o.textContent = (p.name || p.id) + (p.network_cidr ? " · " + p.network_cidr : " · 자동");
+            selectEl.appendChild(o);
+          });
+          selectEl.value = activeId || "";
+        }
+
+        var form = document.getElementById("settings-form");
+        var msg = document.getElementById("settings-msg");
+        fetch("/api/settings", { headers: authHeaders() })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (p) {
+            if (!p.ok || !p.data) return;
+            var d = p.data;
+            document.getElementById("inventory_path").value = d.inventory_path || "";
+            document.getElementById("scan_interval_seconds").value = d.scan_interval_seconds || 10;
+            document.getElementById("history_enabled").checked = !!d.history_enabled;
+            document.getElementById("history_max_snapshots").value = d.history_max_snapshots != null ? d.history_max_snapshots : 200;
+            document.getElementById("history_min_interval_seconds").value =
+              d.history_min_interval_seconds != null ? d.history_min_interval_seconds : 60;
+            document.getElementById("alert_webhook_url").value = d.alert_webhook_url || "";
+            document.getElementById("alert_on_new_mac").checked = !!d.alert_on_new_mac;
+            document.getElementById("alert_on_mac_gone").checked = !!d.alert_on_mac_gone;
+            document.getElementById("scan_profiles_json").value = JSON.stringify(d.scan_profiles || [], null, 2);
+            fillProfileSelect(document.getElementById("active_profile_id"), d.scan_profiles || [], d.active_profile_id || "");
+          })
+          .catch(function () {});
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          msg.textContent = "";
+          msg.className = "";
+          var profilesRaw = document.getElementById("scan_profiles_json").value.trim();
+          var profiles;
+          try {
+            profiles = profilesRaw ? JSON.parse(profilesRaw) : [];
+            if (!Array.isArray(profiles)) throw new Error("프로필은 배열이어야 합니다.");
+          } catch (err) {
+            msg.textContent = "프로필 JSON 파싱 실패: " + err.message;
+            msg.className = "settings-msg--err";
+            return;
+          }
+          var body = {
+            inventory_path: document.getElementById("inventory_path").value,
+            scan_interval_seconds: parseInt(document.getElementById("scan_interval_seconds").value, 10),
+            history_enabled: document.getElementById("history_enabled").checked,
+            history_max_snapshots: parseInt(document.getElementById("history_max_snapshots").value, 10),
+            history_min_interval_seconds: parseInt(document.getElementById("history_min_interval_seconds").value, 10),
+            alert_webhook_url: document.getElementById("alert_webhook_url").value,
+            alert_on_new_mac: document.getElementById("alert_on_new_mac").checked,
+            alert_on_mac_gone: document.getElementById("alert_on_mac_gone").checked,
+            scan_profiles: profiles,
+            active_profile_id: document.getElementById("active_profile_id").value,
+          };
+          fetch("/api/settings", {
+            method: "POST",
+            headers: Object.assign({ "Content-Type": "application/json" }, authHeaders()),
+            body: JSON.stringify(body),
+          })
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (p) {
+              if (p.ok) {
+                msg.textContent = "저장했습니다. 대시보드를 새로고침하면 스캔 주기·프로필이 반영됩니다.";
+                msg.className = "settings-msg--ok";
+                if (p.data) {
+                  document.getElementById("scan_profiles_json").value = JSON.stringify(p.data.scan_profiles || [], null, 2);
+                  fillProfileSelect(
+                    document.getElementById("active_profile_id"),
+                    p.data.scan_profiles || [],
+                    p.data.active_profile_id || ""
+                  );
+                }
+              } else {
+                msg.textContent = p.error || "저장 실패";
+                msg.className = "settings-msg--err";
+              }
+            })
+            .catch(function (err) {
+              msg.textContent = String(err);
+              msg.className = "settings-msg--err";
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>

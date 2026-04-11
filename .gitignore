@@ -15,6 +15,11 @@ build/
 outputs/
 uploads/
 
+# 로컬 설정·비밀 인벤토리 (커밋 금지)
+user_settings.json
+devices.secret.yaml
+scan_history.sqlite
+
 # Node (VitePress docs)
 node_modules/
 

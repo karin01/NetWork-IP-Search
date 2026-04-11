@@ -31,6 +31,22 @@ python app.py
 
 브라우저에서 `http://127.0.0.1:5000` 접속
 
+### 접근 토큰·웹 설정·민감 파일 (선택)
+
+- **`NETWORK_IP_SEARCH_TOKEN`** — 환경 변수로 설정하면 API·HTML 페이지 접근에 토큰이 필요합니다. 브라우저는 처음 `http://127.0.0.1:5000/?token=값` 으로 열거나, API 호출 시 헤더 `X-NetWork-IP-Token` 을 붙입니다. (`/api/health`, `/api/build-info`, 정적 `/static` 은 예외)
+- **`/settings`** (또는 `GET/POST /api/settings`) — 기본 인벤토리 YAML 경로·스캔 주기(초)를 저장합니다. 저장 파일은 프로젝트 루트의 **`user_settings.json`** (Git 제외).
+- **`devices.secret.yaml`** — 실제 SNMP/SSH 비밀번호가 들어가는 인벤토리는 예시(`devices.secret.yaml.example`)를 복사해 쓰고, `.gitignore` 로 커밋에서 제외하세요.
+
+### 스모크 테스트·Docker
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests/test_smoke.py -v
+```
+
+- **`Dockerfile`** — Linux 컨테이너에서 Flask UI만 띄우는 참고용입니다. **Windows 전용 기능**(Npcap ARP, `netsh` Wi‑Fi 등)은 컨테이너·클라우드 VM에서 기대하지 마세요. 상세는 문서 `docs/guide/cloud-deploy.md`.
+- **포트** — 로컬은 `NETWORK_IP_SEARCH_PORT`, 일부 PaaS는 **`PORT`** 환경 변수를 씁니다. 둘 중 설정된 값이 사용됩니다(`NETWORK_IP_SEARCH_PORT` 우선).
+
 ## 2-1) GitHub Pages (소개 페이지 + 기술 문서)
 
 Flask 대시보드는 서버가 필요해 Pages에 호스팅할 수 없습니다. 대신 Actions가 다음을 한 번에 배포합니다.

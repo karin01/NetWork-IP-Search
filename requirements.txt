@@ -1,13 +1,14 @@
-flask
-scapy
-psutil
-paramiko
-pyyaml
-pysnmp
-netmiko
-fastapi
-uvicorn
-streamlit
-requests
-python-nmap
-pandas
+# 호환 범위 고정(재현성). 필요 시 pip install -U 로 상한 내에서 올리세요.
+Flask>=3.0.0,<4
+scapy>=2.5.0,<2.7
+psutil>=5.9.0,<8
+paramiko>=3.4.0,<4
+PyYAML>=6.0.1,<7
+pysnmp>=4.4.12,<8
+netmiko>=4.3.0,<6
+fastapi>=0.115.0,<1
+uvicorn>=0.30.0,<1
+streamlit>=1.38.0,<2
+requests>=2.31.0,<3
+python-nmap>=0.7.1,<0.8
+pandas>=2.0.0,<3

@@ -52,6 +52,27 @@
 - `. was unexpected at this time`: `if (...)` **괄호 블록 안의 `echo` 문에 리터럴 `(` `)`** 가 있으면 CMD가 블록을 중간에 끊음 → `(folder ...)` 등은 **`^(` `^)`** 로 이스케이프
 - `python: can't open file 'G:\\내'`: 한글·공백 경로에서 `start cmd /k "cd ... && python ...\app.py"` **중첩 따옴표가 깨져** 스크립트 경로가 `G:\내` 로 잘림 → **`start /D "%PROJROOT%" cmd /k ""%PYEXE%" app.py"`** (작업 폴더만 지정, `app.py`는 상대 경로)
 - GitHub Pages: VitePress `docs/` 배포 — 처음은 `upload-pages-artifact`+`deploy-pages`+Pages 소스 *GitHub Actions* 조합에서 404 다수 → **`peaceiris/actions-gh-pages` 로 `gh-pages` 브랜치 푸시**로 변경; Settings → Pages → **Deploy from branch → gh-pages / (root)**; `config.mjs` 의 `base` 는 `GITHUB_ACTIONS` 일 때만 `/NetWork-IP-Search/`
+- **요약·보안·문서 일괄 보강** (`wifi9`): `GET /api/health`, `GET /api/dashboard-summary`, 선택적 `NETWORK_IP_SEARCH_TOKEN`, `app_settings.py`·`user_settings.json`, `/settings`·`/api/settings`, 대시보드 시스템 요약 카드·`dashboard.js` 토큰 전달, `devices.secret.yaml.example`·`.gitignore`, `requirements-dev.txt`·`tests/test_smoke.py`, `Dockerfile`·`.dockerignore`(전체 `COPY` + `tests` 제외), VitePress `docs/guide/quickstart-5min.md`·`troubleshooting.md`·`cloud-deploy.md` 및 `config.mjs` 네비/사이드바 연결, `after_request`에 `/settings` no-store, 수신 포트 `PORT` 폴백, README 보강, 빌드 태그·정적 `?v=wifi9` 정렬
+
+## 2026-04-11 (wifi10)
+
+- **스캔 이력·diff**: `scan_history.sqlite` + `scan_history_store.py`, `GET /api/history/snapshots`, `GET /api/history/diff` (`from_id`, 선택 `to_id`), 대시보드「스캔 이력·비교」카드·`dashboard.js` 목록/비교
+- **설정 확장** (`app_settings.py` / `POST /api/settings`): `history_*`, `alert_*`, `scan_profiles`, `active_profile_id`; `/settings` 폼 보강
+- **스캔 프로필**: `scanner.scan(..., network_cidr_override=)`, ping 폴백 시 다른 대역이면 자기 IP 제외 생략
+- **Webhook**: `alert_webhook.py`, 직전 스캔 대비 온라인 키 집합 변화 시 POST JSON (`run_network_scan` 내)
+- **가시성**: `scan_duration_ms`, `dashboard-summary`에 스캔 소요·이력·프로필 요약
+- `.gitignore`에 `scan_history.sqlite`, 빌드 태그·정적 `?v=wifi10`, 스모크 테스트 이력 API
+
+## 향후 기능 아이디어 (브레인스토밍, 2026-04-11)
+
+- **스캔 이력 영구 저장**: 세션 그래프를 넘어 SQLite 등으로 스냅샷 저장·날짜 범위 조회·“어제 대비 신규/사라진 MAC” diff.
+- **알림 채널**: 특정 장치 오프라인·신규 MAC 출현 시 Discord/Slack/Webhook 또는 Windows 토스트(로컬).
+- **스캔 프로필**: 여러 CIDR·포트 목록·폴링 주기를 이름 붙여 저장하고 전환(홈/랩 등).
+- **이름 해석 보강**: 역방향 DNS 일괄, 가능하면 mDNS/Bonjour 호스트명(같은 서브넷 한정)으로 표시 품질 향상.
+- **비교·감사 UI**: 두 시점 CSV/JSON 업로드 또는 저장 이력에서 “변경만” 테이블로 보기.
+- **API 하드닝**: 토큰 사용 시 로그인 실패·민감 API에 간단 rate limit, 설정 변경 감사 로그 파일.
+- **가시성**: 대시보드에 “마지막 전체 스캔 소요 시간”, Npcap/폴백 모드, 오류 건수 배지.
+- **모바일**: PWA manifest·홈 화면 추가(같은 Wi‑Fi에서 휴대폰으로 열 때 UX).
 
 ## 운영 메모
 

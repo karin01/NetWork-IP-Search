@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=wifi15" />
   </head>
   <body>
 
@@ -30,7 +30,7 @@
           <h1 class="topbar-title">네트워크 장치 대시보드</h1>
           <p class="topbar-sub">
             장치 탐지 및 연결 상태 실시간 모니터링
-            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi8</span>
+            <span class="dashboard-build" title="이 배지가 없으면 예전 페이지·다른 서버일 수 있습니다">· 빌드 Wi-Fi+wifi15</span>
           </p>
         </div>
       </div>
@@ -70,7 +70,8 @@
           </div>
         </div>
         <div class="topbar-buttons">
-          <a class="btn btn-ghost topbar-wifi-link" href="{{ url_for('wifi_tools_page') }}">Wi-Fi 도구</a>
+          <a class="btn btn-ghost topbar-wifi-link" href="#card-wifi" title="페이지 아래 Wi-Fi 링크·iperf로 이동">Wi-Fi·iperf</a>
+          <a class="btn btn-ghost topbar-wifi-link" href="{{ url_for('wifi_tools_page') }}">Wi-Fi 전체</a>
           <button id="refresh-button" class="btn btn-primary" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
             다시 스캔
@@ -91,7 +92,73 @@
     <div id="warning-message" class="alert-banner alert-banner--warn hidden"></div>
     <div id="error-message" class="alert-banner alert-banner--error hidden"></div>
 
+    <!-- 시스템 요약: Npcap·인벤토리·토큰·마지막 스캔 -->
+    <section class="card card--system-summary" id="card-system-summary" aria-label="시스템 요약">
+      <div class="card-header card-header--compact">
+        <h2 class="card-title">시스템 요약</h2>
+        <a class="btn btn-ghost btn--tiny" href="{{ url_for('settings_page') }}">설정</a>
+      </div>
+      <div class="system-summary-grid">
+        <div class="system-summary-item">
+          <span class="sys-label">빌드</span>
+          <span class="sys-val" id="summary-build">—</span>
+        </div>
+        <div class="system-summary-item">
+          <span class="sys-label">Npcap</span>
+          <span class="sys-val" id="summary-npcap">—</span>
+        </div>
+        <div class="system-summary-item system-summary-item--wide">
+          <span class="sys-label">인벤토리</span>
+          <span class="sys-val" id="summary-inventory">—</span>
+        </div>
+        <div class="system-summary-item">
+          <span class="sys-label">접근 토큰</span>
+          <span class="sys-val" id="summary-auth">—</span>
+        </div>
+        <div class="system-summary-item system-summary-item--wide">
+          <span class="sys-label">마지막 스캔</span>
+          <span class="sys-val" id="summary-last-scan">—</span>
+        </div>
+        <div class="system-summary-item">
+          <span class="sys-label">스캔 소요</span>
+          <span class="sys-val" id="summary-scan-ms">—</span>
+        </div>
+        <div class="system-summary-item system-summary-item--wide">
+          <span class="sys-label">이력·프로필</span>
+          <span class="sys-val" id="summary-history-profile">—</span>
+        </div>
+      </div>
+      <p class="system-summary-warn" id="summary-warning-line"></p>
+      <p class="dashboard-run-hint">
+        CMD(검은 창)은 <strong>Flask 서버 로그</strong>만 보여 줍니다(netstat·진단 URL 안내 등). 표·Wi-Fi·그래프는
+        <strong>이 브라우저 탭</strong>에 나옵니다. CMD 창을 닫으면 서버가 꺼져 새로고침이 되지 않습니다.
+      </p>
+    </section>
+
     <main class="dashboard-grid">
+
+      <!-- 스캔 이력 diff: 그리드 전폭 행(scanhist) — CSS grid-area 로 배치 -->
+      <section class="card card--history-diff" id="card-scan-history" aria-label="스캔 이력 비교">
+        <div class="card-header card-header--compact">
+          <div>
+            <h2 class="card-title">스캔 이력·비교</h2>
+            <p class="card-sub">저장된 스냅샷과 방금 스캔한 목록의 온라인 차이(MAC·IP 키)</p>
+          </div>
+        </div>
+        <div class="history-diff-tools">
+          <div class="history-diff-field">
+            <label class="field-label history-diff-label" for="history-snapshot-select">기준 스냅샷</label>
+            <select id="history-snapshot-select" class="inline-input history-select"></select>
+          </div>
+          <button type="button" id="history-diff-button" class="btn btn-primary">현재와 비교</button>
+          <button type="button" id="history-snapshots-refresh" class="btn btn-ghost">목록 새로고침</button>
+        </div>
+        <pre id="history-diff-result" class="result-box">목록을 불러오는 중…</pre>
+      </section>
+
+      {# 스크롤 밖으로 밀리지 않게 차트보다 위: 링크·iperf·분석기 #}
+      {% set show_wifi_fullpage_link = true %}
+      {% include "_wifi_panels.html" %}
 
       <!-- ─────────────────────────────────────────
            [좌상] 접속 이력 그래프
@@ -149,21 +216,6 @@
         <div class="fp-reasons-wrap">
           <p class="fp-reasons-label">실패 사유</p>
           <pre id="fp-failure-reasons" class="fp-reasons-box">아직 수집 결과가 없습니다.</pre>
-        </div>
-      </section>
-
-      <!-- ─────────────────────────────────────────
-           [상단 전폭] Wi-Fi 전용 페이지 안내 (CTA)
-      ───────────────────────────────────────── -->
-      <section class="card card--wifi-cta" id="card-wifi-cta" aria-label="Wi-Fi 도구로 이동">
-        <div class="wifi-cta-inner">
-          <div class="wifi-cta-copy">
-            <h2 class="wifi-cta-title">Wi-Fi 링크 · 주변 AP 분석</h2>
-            <p class="wifi-cta-desc">
-              netsh 상태, iperf3, 채널 차트, CSV/JSON은 별도 페이지에서 스크롤 없이 크게 볼 수 있습니다.
-            </p>
-          </div>
-          <a class="btn btn-primary btn-wifi-cta-main" href="{{ url_for('wifi_tools_page') }}">Wi-Fi 도구 열기 →</a>
         </div>
       </section>
 
@@ -282,6 +334,6 @@
 
     </main>
 
-    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi8"></script>
+    <script src="{{ url_for('static', filename='dashboard.js') }}?v=wifi15"></script>
   </body>
 </html>

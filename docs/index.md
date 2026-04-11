@@ -12,6 +12,9 @@ hero:
     alt: NetWork-IP Search
   actions:
     - theme: brand
+      text: 5분 안에 실행
+      link: /guide/quickstart-5min
+    - theme: brand
       text: Flask 서버 켜기 (대시보드)
       link: /guide/flask-server
     - theme: alt

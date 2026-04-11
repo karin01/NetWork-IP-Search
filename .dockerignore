@@ -1,0 +1,14 @@
+.venv
+venv
+__pycache__
+.git
+.github
+docs/node_modules
+*.md
+.gitignore
+user_settings.json
+devices.secret.yaml
+outputs
+uploads
+tests
+.pytest_cache

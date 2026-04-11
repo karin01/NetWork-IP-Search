@@ -4,7 +4,7 @@ import subprocess
 import socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import psutil
 from scapy.all import ARP, Ether, srp
@@ -144,7 +144,16 @@ class NetworkScanner:
     def _fallback_ping_scan(self, network_cidr: str, current_ip: str, scanned_at: datetime) -> Tuple[List[Dict], str]:
         """Scapy 사용 불가 시 ping 기반으로 제한 스캔을 수행합니다."""
         network_object = ipaddress.ip_network(network_cidr, strict=False)
-        candidate_ips = [str(host_ip) for host_ip in network_object.hosts() if str(host_ip) != current_ip]
+        # WHY: 다른 서브넷을 스캔할 때 로컬 IP가 대역 밖이면 자기 자신 제외가 무의미하므로 생략합니다.
+        exclude_ip = None
+        try:
+            if current_ip and ipaddress.ip_address(current_ip) in network_object:
+                exclude_ip = current_ip
+        except ValueError:
+            exclude_ip = None
+        candidate_ips = [
+            str(host_ip) for host_ip in network_object.hosts() if exclude_ip is None or str(host_ip) != exclude_ip
+        ]
 
         warning_message = ""
         if len(candidate_ips) > self.max_ping_hosts:
@@ -237,8 +246,14 @@ class NetworkScanner:
         for device in online_devices[self.max_port_scan_devices :]:
             device["open_ports"] = []
 
-    def scan(self, timeout_seconds: int = 2) -> Dict:
-        current_ip, network_cidr = _find_private_ipv4_network()
+    def scan(self, timeout_seconds: int = 2, network_cidr_override: Optional[str] = None) -> Dict:
+        current_ip, auto_cidr = _find_private_ipv4_network()
+        network_cidr = auto_cidr
+        if network_cidr_override and str(network_cidr_override).strip():
+            try:
+                network_cidr = str(ipaddress.ip_network(str(network_cidr_override).strip(), strict=False))
+            except ValueError as error:
+                raise ValueError(f"잘못된 CIDR입니다: {network_cidr_override}") from error
         scanned_at = datetime.now()
 
         online_devices: List[Dict] = []

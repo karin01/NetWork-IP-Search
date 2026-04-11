@@ -280,10 +280,11 @@ a.topbar-jump {
 
 /* ── 6. 대시보드 그리드 레이아웃 ─────────────────────────── */
 /*
-  [차트 그래프][장비핑거프린트]  ← 상단 2열
-  [────────── Wi-Fi 도구 CTA 전폭 ──────────]
-  [───────── 장치 목록 테이블 ─────────]  ← 중단 전폭
-  [로그 분석][자동화]  ← 하단 2열
+  [스캔 이력]
+  [Wi-Fi 링크·iperf][Wi-Fi 분석기]  ← 차트 위에 두어 스크롤 없이 보이게
+  [차트][장비핑거프린트]
+  [───────── 장치 목록 테이블 ─────────]
+  [로그 분석][자동화]
 */
 .dashboard-grid {
   display: grid;
@@ -293,8 +294,9 @@ a.topbar-jump {
   padding: 1rem 1.5rem 2rem;
 
   grid-template-areas:
+    "scanhist  scanhist"
+    "wifi      wifian"
     "history   fingerprint"
-    "wificta   wificta"
     "devices   devices"
     "log       automation"
     "switch    switch";
@@ -311,52 +313,23 @@ a.topbar-jump {
   margin-right: auto;
 }
 
+#card-scan-history { grid-area: scanhist; }
 #card-history     { grid-area: history; }
 #card-fingerprint { grid-area: fingerprint; }
-#card-wifi-cta    { grid-area: wificta; }
-#card-wifi        { grid-area: wifi; }
+#card-wifi        { grid-area: wifi; scroll-margin-top: calc(var(--topbar-h) + 12px); }
 #card-wifi-analyzer { grid-area: wifian; }
 #card-devices     { grid-area: devices; }
 #card-log         { grid-area: log; }
 #card-automation  { grid-area: automation; }
 #card-switch      { grid-area: switch; }
 
-/* 메인 대시보드: Wi-Fi 전용 페이지로 안내하는 CTA */
-.card--wifi-cta {
-  background: linear-gradient(135deg, rgba(14, 159, 190, 0.12), rgba(17, 24, 39, 0.95));
-  border-color: rgba(14, 159, 190, 0.35);
-}
-
-.wifi-cta-inner {
+/* Wi-Fi 카드 헤더: 전체 화면 링크 + 새로고침 */
+.wifi-header-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  padding: 1.15rem 1.35rem;
-}
-
-.wifi-cta-title {
-  font-family: var(--ff-d);
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--tx-bright);
-  letter-spacing: -0.02em;
-}
-
-.wifi-cta-desc {
-  font-size: 0.78rem;
-  color: var(--tx-main);
-  margin-top: 0.35rem;
-  max-width: 42rem;
-  line-height: 1.45;
-}
-
-.btn-wifi-cta-main {
   flex-shrink: 0;
-  padding-left: 1.35rem;
-  padding-right: 1.35rem;
-  font-weight: 700;
 }
 
 /* 상단 바: Wi-Fi 하위 페이지 */
@@ -1259,9 +1232,11 @@ canvas {
   .dashboard-grid {
     grid-template-columns: 1fr;
     grid-template-areas:
+      "scanhist"
+      "wifi"
+      "wifian"
       "history"
       "fingerprint"
-      "wificta"
       "devices"
       "log"
       "automation"
@@ -1290,6 +1265,107 @@ canvas {
   .dashboard-grid { padding: 0.75rem 1rem 2rem; }
 
   .fp-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── 시스템 요약 카드 ─────────────────────────────────────── */
+.card--system-summary {
+  margin: 0 1.5rem 1rem;
+  padding: 1rem 1.25rem;
+  max-width: calc(100% - 3rem);
+}
+
+.card-header--compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.card-header--compact .card-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.btn--tiny {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.system-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.65rem 1rem;
+}
+
+.system-summary-item--wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 640px) {
+  .system-summary-item--wide {
+    grid-column: span 1;
+  }
+}
+
+.system-summary-item .sys-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tx-dim);
+  margin-bottom: 0.15rem;
+}
+
+.system-summary-item .sys-val {
+  font-size: 0.88rem;
+  color: var(--tx-bright);
+  word-break: break-all;
+}
+
+.system-summary-warn {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--amber);
+  min-height: 1.2em;
+}
+
+/* 로컬 실행 시 CMD vs 브라우저 역할 안내 */
+.dashboard-run-hint {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--tx-dim);
+}
+
+/* 스캔 이력·diff 카드 — main.dashboard-grid 안 전폭 행(scanhist), 좌우 여백은 그리드 padding 과 맞춤 */
+.card--history-diff {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+}
+.history-diff-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0 1.2rem;
+}
+.history-diff-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 220px;
+}
+/* WHY: .field-label 기본 margin(1.2rem 좌우)이 tools 패딩과 겹쳐 이중 여백이 됨 */
+.card--history-diff .history-diff-label {
+  margin: 0 0 0.35rem;
+}
+.history-diff-tools .history-select {
+  min-width: 200px;
+  max-width: 100%;
 }
 
 /* ── 17. 스크롤바 ────────────────────────────────────────── */
