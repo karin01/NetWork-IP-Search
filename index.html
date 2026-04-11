@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NetWork-IP Search — LAN · Wi‑Fi · 대시보드</title>
+    <meta
+      name="description"
+      content="인터넷만 되면 어떤 PC에서도 열 수 있는 소개 페이지. LAN 스캔·Wi‑Fi 도구는 Windows PC에서 서버 실행 후 사용합니다."
+    />
+    <meta name="theme-color" content="#0a0a12" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+
+    <!-- Portfolio 스타일: 왼쪽 세로 소셜 -->
+    <aside class="side-rail" aria-label="외부 링크">
+      <a
+        class="rail-icon"
+        href="https://github.com/karin01/NetWork-IP-Search"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="GitHub 저장소"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+          <path
+            d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.71.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.67.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05.8-.23 1.65-.35 2.5-.35.85 0 1.7.12 2.5.35 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.48A10.01 10.01 0 0022 12.26C22 6.58 17.52 2 12 2z"
+          />
+        </svg>
+      </a>
+      <a
+        class="rail-icon"
+        href="https://karin01.github.io/Portfolio/"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Portfolio"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M4 19V5M4 19h16M8 11v8M12 7v12M16 9v10" />
+        </svg>
+      </a>
+      <a class="rail-icon" href="manual/" title="기술 문서">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+        </svg>
+      </a>
+      <a class="rail-icon" href="mailto:jungwon1023@gmail.com" title="메일">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="M22 7l-10 7L2 7" />
+        </svg>
+      </a>
+    </aside>
+
+    <header class="top-bar">
+      <a class="brand" href="./">NetWork-IP Search</a>
+      <nav class="top-nav" aria-label="메인 메뉴">
+        <a class="nav-link is-active" href="./" aria-current="page">Home</a>
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="manual/">Docs</a>
+        <a class="nav-link" href="manual/guide/flask-server.html">서버 실행</a>
+        <a class="nav-link" href="manual/guide/switch-ports.html">스위치</a>
+        <a class="nav-link" href="manual/guide/serial-console.html">시리얼</a>
+        <a class="nav-link" href="#public-url">웹에서 테스트</a>
+        <a
+          class="nav-link"
+          href="https://github.com/karin01/NetWork-IP-Search"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >
+      </nav>
+    </header>
+
+    <main>
+      <!-- Portfolio형 2열 히어로: 왼쪽 카피, 오른쪽 오브 -->
+      <section class="hero-split">
+        <div class="hero-copy">
+          <p class="hero-kicker">✨ LAN · Wi‑Fi · Windows · Open Source</p>
+          <h1 class="hero-title">
+            우리 집·사무실 네트워크를<br />
+            <span class="gradient-text">브라우저 한 탭</span>으로 정리합니다.
+          </h1>
+          <p class="hero-sub">설치만 해 두면, 장치 목록과 Wi‑Fi 도구를 대시보드에서 만납니다.</p>
+          <p class="hero-desc">
+            Scapy·ARP 스캔, 포트·OUI, 로그 가공까지 — 이 사이트는
+            <strong>프로젝트를 소개하는 웹 페이지</strong>이고,
+            실제 패널은 PC에서 서버를 켠 뒤 같은 Wi‑Fi의 다른 기기에서도 열 수 있습니다.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="btn btn-primary"
+              href="https://github.com/karin01/NetWork-IP-Search"
+              target="_blank"
+              rel="noopener noreferrer"
+              >저장소 가기</a
+            >
+            <a class="btn btn-ghost" href="manual/guide/flask-server.html">서버 실행 매뉴얼</a>
+            <a class="btn btn-ghost" href="manual/">전체 Docs</a>
+          </div>
+          <ul class="hero-badges" aria-label="하이라이트">
+            <li><span class="badge-num">Any</span> 브라우저</li>
+            <li><span class="badge-num">Wi‑Fi</span> 같은 망</li>
+            <li><span class="badge-num">GitHub</span> Pages</li>
+          </ul>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="orb-stage">
+            <div class="orb-ring orb-ring--slow"></div>
+            <div class="orb-ring orb-ring--mid"></div>
+            <div class="orb-ring orb-ring--fast"></div>
+            <div class="orb-core"></div>
+            <div class="orb-glow"></div>
+          </div>
+          <p class="orb-caption">Network orbit</p>
+        </div>
+      </section>
+
+      <!-- 다른 PC에서 테스트: 공개 URL -->
+      <section id="public-url" class="url-panel">
+        <h2 class="url-panel__title">다른 PC·휴대폰에서도 이 페이지를 열 수 있어요</h2>
+        <p class="url-panel__lead">
+          <a href="https://karin01.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">Portfolio</a>와
+          같이 <strong>인터넷만 연결되면</strong> 어디서나 브라우저로 접속할 수 있습니다. 별도 프로그램 설치 없이 주소만
+          입력하면 됩니다.
+        </p>
+        <div class="url-row">
+          <code class="url-field" id="publicPageUrl">https://karin01.github.io/NetWork-IP-Search/</code>
+          <button type="button" class="btn btn-copy" id="copyUrlBtn">주소 복사</button>
+        </div>
+        <p class="url-hint" id="copyFeedback" role="status" aria-live="polite"></p>
+        <p class="url-note">
+          반면 <strong>실시간 스캔 대시보드</strong>(그래프·장치 목록)는 Python 서버가 돌아가는 PC가 있어야 합니다.
+          그 PC에서 실행한 뒤 <code class="inline-code">http://그PC의IP:8500</code> 으로 같은 Wi‑Fi 기기에서 테스트하세요.
+        </p>
+        <p class="url-note url-note--warn">
+          <strong>여기로 들어왔는데 README만 보이나요?</strong> GitHub 저장소
+          <strong>Settings → Pages</strong>에서 게시 브랜치가 <strong><code class="inline-code">gh-pages</code></strong> /
+          <code class="inline-code">(root)</code> 인지 확인하세요. <code class="inline-code">main</code>으로 두면 Jekyll이 README만
+          올립니다.
+        </p>
+      </section>
+
+      <section id="about" class="section">
+        <h2 class="section-title">무엇을 하나요</h2>
+        <ul class="feature-list">
+          <li><strong>LAN 장치</strong> — 스캔 결과를 대시보드에서 정리합니다.</li>
+          <li><strong>Wi‑Fi</strong> — 전용 경로에서 netsh·주변 AP·채널 등 (Windows).</li>
+          <li>
+            <strong>스위치 포트</strong> — IF-MIB SNMP 수집, Cisco는 SNMP 실패 시 SSH 보조. 벤더별 설정은
+            <a href="manual/guide/switch-ports.html">스위치 포트 매뉴얼</a>.
+          </li>
+          <li>
+            <strong>문서</strong> — API·로그 랩은 <a href="manual/">Docs</a>에서 확인합니다.
+          </li>
+        </ul>
+      </section>
+
+      <!-- 랜딩에도 서버 실행 요약 + 상세는 /manual/ -->
+      <section id="server-manual" class="section section-card">
+        <h2 class="section-title">Flask 서버로 대시보드 열기 (Windows)</h2>
+        <p class="section-lead">
+          이 페이지(<strong>github.io</strong>)에서는 서버를 실행할 수 없습니다. 아래는 <strong>프로젝트를 받은 PC</strong>에서 할 일입니다.
+          전체 절차·명령 복사·오류 대응은 매뉴얼을 열어 주세요.
+        </p>
+        <ol class="steps">
+          <li>저장소 클론 또는 ZIP 해제 후 폴더로 이동.</li>
+          <li>
+            <strong><code>run_dashboard.bat</code></strong> 또는 <strong><code>대시보드 열기.bat</code></strong> 실행 → 제목
+            <code class="hl">NetWork-IP Flask 8500</code> 인 CMD 창이 떠 있어야 합니다.
+          </li>
+          <li>브라우저: <code class="hl">http://127.0.0.1:8500</code> · Wi‑Fi 전용 <code class="hl">http://127.0.0.1:8500/wifi</code></li>
+          <li>
+            (선택) 가상환경·수동 실행:
+            <code class="hl">python -m venv .venv</code> → <code class="hl">.venv\Scripts\activate</code> →
+            <code class="hl">pip install -r requirements.txt</code> → <code class="hl">python app.py</code>
+          </li>
+          <li>포트: 기본 <code class="hl">8500</code>. 바꾸려면 환경 변수 <code class="hl">NETWORK_IP_SEARCH_PORT</code> 후 <code class="hl">python app.py</code></li>
+        </ol>
+        <p class="manual-cta">
+          <a class="btn btn-primary btn--sm" href="manual/guide/flask-server.html">Flask 서버 실행 — 전체 매뉴얼</a>
+        </p>
+      </section>
+
+      <section id="switch-manual" class="section section-card">
+        <h2 class="section-title">스위치 장비별 매뉴얼 (포트 UP/DOWN)</h2>
+        <p class="section-lead">
+          대시보드 <strong>「스위치 포트 현황」</strong> 과 API <code class="hl">GET /api/switch/ports</code> 는
+          <code class="hl">devices.yaml</code> 형 인벤토리를 사용합니다.
+        </p>
+        <ul class="feature-list">
+          <li><strong>공통</strong> — SNMP IF-MIB (UDP 161). <code>devices.example.yaml</code> 참고.</li>
+          <li><strong>Cisco</strong> — SNMP 우선 · 실패 시 SSH <code>show interfaces status</code> (vendor에 <code>cisco</code> 포함).</li>
+          <li><strong>Juniper / HPE / Aruba</strong> — SNMP(IF-MIB) 필수.</li>
+          <li><strong>유비쿼티(UniFi·에지 등)</strong> — 펌웨어별 SNMP 설정 후 관리 IP로 수집 · SSH 보조 없음.</li>
+          <li><strong>다산</strong> — 제품 SNMP 메뉴에서 community/v3·허용 호스트 설정.</li>
+          <li><strong>Dovado·다보링크 등 SOHO</strong> — SNMP·IF-MIB 제공 시만 유효, 미지원 기기는 포트 기능 사용 어려움.</li>
+        </ul>
+        <p class="manual-cta">
+          <a class="btn btn-primary btn--sm" href="manual/guide/switch-ports.html">스위치 포트 — 벤더별 상세 매뉴얼</a>
+          <a class="btn btn-ghost btn--sm" href="manual/guide/serial-console.html">시리얼 콘솔 — Baud·명령어</a>
+        </p>
+      </section>
+
+      <section id="run" class="section">
+        <h2 class="section-title">한 줄 요약</h2>
+        <p class="fine-print">
+          <strong>소개·매뉴얼:</strong> 지금 도메인(또는 <a href="manual/">/manual/</a>) ·
+          <strong>대시보드:</strong> PC에서 Flask 실행 후 <code class="hl">127.0.0.1:8500</code> ·
+          GitHub Pages는 정적 파일만 호스팅합니다.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© NetWork-IP Search · GitHub Pages</p>
+      <p>
+        <a href="manual/">Docs</a>
+        ·
+        <a href="manual/guide/flask-server.html">Flask</a>
+        ·
+        <a href="manual/guide/switch-ports.html">스위치</a>
+        ·
+        <a href="manual/guide/serial-console.html">시리얼</a>
+        ·
+        <a href="https://github.com/karin01/NetWork-IP-Search">Source</a>
+        ·
+        <a href="https://karin01.github.io/Portfolio/">Portfolio</a>
+      </p>
+    </footer>
+
+    <script>
+      // 공개 URL 복사 (다른 PC에서 붙여넣기 테스트용)
+      (function () {
+        var btn = document.getElementById("copyUrlBtn");
+        var field = document.getElementById("publicPageUrl");
+        var feedback = document.getElementById("copyFeedback");
+        if (!btn || !field) return;
+        btn.addEventListener("click", function () {
+          var text = field.textContent.trim();
+          function ok() {
+            feedback.textContent = "복사했습니다. 다른 PC 브라우저 주소창에 붙여 넣어 보세요.";
+          }
+          function fail() {
+            feedback.textContent = "복사에 실패했습니다. 위 주소를 직접 선택해 복사해 주세요.";
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(ok).catch(fail);
+          } else {
+            try {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.setAttribute("readonly", "");
+              ta.style.position = "fixed";
+              ta.style.left = "-9999px";
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              document.body.removeChild(ta);
+              ok();
+            } catch (e) {
+              fail();
+            }
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
