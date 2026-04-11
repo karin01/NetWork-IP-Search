@@ -2,6 +2,17 @@
 
 Scapy를 사용해 현재 네트워크의 장치를 탐지하고, IP/연결 상태를 대시보드로 보여주는 Python 앱입니다.
 
+### GitHub Pages가 README만 보일 때 — 1분 체크리스트
+
+`https://karin01.github.io/NetWork-IP-Search/` 에 **README·Jekyll 페이지**만 보이면, 아래를 순서대로 확인하세요.
+
+- [ ] 저장소 **Settings → Pages** 로 이동
+- [ ] **Build and deployment → Source** 가 **Deploy from a branch** 인지 확인 (`GitHub Actions` 전용이 아님)
+- [ ] **Branch:** **`gh-pages`** · **Folder:** **`/(root)`** 선택 후 **Save**
+- [ ] **Actions** 탭 → 워크플로 **Deploy docs to GitHub Pages** 가 최근 커밋에서 **성공(초록)** 인지 확인
+- [ ] 1~2분 후 브라우저에서 **강력 새로고침**(Ctrl+F5) 후 같은 주소로 다시 열기
+- [ ] (선택) 페이지에서 **소스 보기**: `generator" content="Jekyll"` 이 보이면 아직 **`main` 브랜치**로 올라가 있는 것 — **`gh-pages`** 로 바꿔야 랜딩·`/manual/` 이 보입니다.
+
 > **GitHub Pages** 루트는 **소개 웹 페이지**(`site-landing/`), 상세 **기술 문서**는 **`/manual/`** 경로(VitePress)입니다. 그래프·스캔 대시보드는 `python app.py`(또는 배치 파일) 실행 후 **`http://127.0.0.1:5000`** 에서 엽니다.
 
 ## 1) 설치
